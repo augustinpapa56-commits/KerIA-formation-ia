@@ -1,1 +1,528 @@
+<!DOCTYPE html>
+<html lang="fr" class="h-full bg-slate-950 text-slate-100">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KerIA — Formation interactive</title>
+  <!-- Tailwind CSS CDN pour un design épuré et moderne -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: '#eef2ff',
+              500: '#6366f1',
+              600: '#4f46e5',
+              700: '#4338ca',
+              900: '#312e81'
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    /* Barre de défilement discrète */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-thumb { background: #334155; border-radius: 3px; }
+    ::-webkit-scrollbar-thumb:hover { background: #475569; }
+  </style>
+</head>
+<body class="h-full flex flex-col font-sans antialiased overflow-hidden select-none">
 
+  <!-- BARRE SUPÉRIEURE DE NAVIGATION GLOBALE -->
+  <header class="h-14 border-b border-slate-800 bg-slate-900/80 backdrop-blur px-4 flex items-center justify-between z-50">
+    <div class="flex items-center gap-3">
+      <span class="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-indigo-600 font-black text-white text-sm shadow-md shadow-indigo-500/20">K</span>
+      <span class="font-bold tracking-tight text-white">Ker<span class="text-indigo-400">IA</span></span>
+      <span class="text-xs px-2 py-0.5 rounded-full bg-slate-800 text-slate-400 border border-slate-700 hidden sm:inline">Formation Pro 4h</span>
+    </div>
+
+    <!-- Sélecteur de Rôle -->
+    <div class="flex items-center bg-slate-950 p-1 rounded-lg border border-slate-800 text-xs">
+      <button onclick="switchView('screen')" id="btn-view-screen" class="px-3 py-1 rounded-md font-medium transition-all text-slate-400 hover:text-white">📽️ Vidéoprojecteur</button>
+      <button onclick="switchView('trainer')" id="btn-view-trainer" class="px-3 py-1 rounded-md font-medium transition-all text-slate-400 hover:text-white">🎛️ Régie Formateur</button>
+      <button onclick="switchView('student')" id="btn-view-student" class="px-3 py-1 rounded-md font-medium transition-all text-slate-400 hover:text-white">📱 Participant</button>
+    </div>
+
+    <!-- Timer Global Synchro -->
+    <div class="flex items-center gap-3">
+      <div id="global-timer-display" class="font-mono text-sm px-2.5 py-1 rounded bg-slate-800 border border-slate-700 text-emerald-400 font-bold">10:00</div>
+    </div>
+  </header>
+
+  <!-- CONTENEUR PRINCIPAL DES VUES -->
+  <main class="flex-1 relative overflow-hidden bg-slate-950">
+
+    <!-- ========================================== -->
+    <!-- 1. VUE VIDÉOPROJECTEUR (Grand Écran)       -->
+    <!-- ========================================== -->
+    <section id="view-screen" class="h-full w-full flex flex-col items-center justify-center p-8 transition-opacity duration-300">
+      <div class="max-w-5xl w-full flex flex-col items-center text-center space-y-6">
+        <div id="screen-badge" class="px-4 py-1 rounded-full text-xs font-semibold tracking-wider uppercase bg-indigo-500/10 text-indigo-400 border border-indigo-500/20">Module 0</div>
+        <h1 id="screen-title" class="text-4xl sm:text-6xl font-black text-white tracking-tight leading-tight">L'Électrochoc</h1>
+        <p id="screen-subtitle" class="text-xl sm:text-2xl text-slate-400 max-w-3xl leading-relaxed">Passer du gadget au réflexe métier qui libère 20 % de sa semaine.</p>
+        
+        <!-- Contenu dynamique de la slide -->
+        <div id="screen-content" class="w-full mt-6 flex justify-center"></div>
+      </div>
+    </section>
+
+    <!-- ========================================== -->
+    <!-- 2. VUE FORMATEUR (Cockpit / Télécommande) -->
+    <!-- ========================================== -->
+    <section id="view-trainer" class="h-full w-full hidden grid-cols-1 lg:grid-cols-3 gap-4 p-4 overflow-hidden bg-slate-950">
+      <!-- Colonne 1 : Navigation & Arborescence -->
+      <div class="bg-slate-900 border border-slate-800 rounded-xl p-4 flex flex-col gap-4 overflow-y-auto">
+        <h2 class="text-xs font-bold uppercase tracking-wider text-slate-400">Déroulé & Carrefours</h2>
+        <div id="trainer-slide-list" class="flex flex-col gap-2"></div>
+        
+        <div class="border-t border-slate-800 pt-3">
+          <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Bifurcation active</h3>
+          <div class="grid grid-cols-2 gap-2 text-xs">
+            <button onclick="setBranch('level', 'beginner')" id="btn-level-beg" class="p-2 rounded bg-indigo-600 text-white font-medium border border-indigo-500">Débutant (RTCF)</button>
+            <button onclick="setBranch('level', 'advanced')" id="btn-level-adv" class="p-2 rounded bg-slate-800 text-slate-400 font-medium hover:bg-slate-700">Avancé (Few-Shot)</button>
+            <button onclick="setBranch('ecosystem', 'microsoft')" id="btn-eco-ms" class="p-2 rounded bg-slate-800 text-slate-400 font-medium hover:bg-slate-700">Microsoft 365</button>
+            <button onclick="setBranch('ecosystem', 'google')" id="btn-eco-gg" class="p-2 rounded bg-indigo-600 text-white font-medium border border-indigo-500">Google / Gemini</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Colonne 2 : Téléprompteur & Scripts d'animation -->
+      <div class="bg-slate-900 border border-slate-800 rounded-xl p-4 flex flex-col gap-4 overflow-y-auto">
+        <div class="flex items-center justify-between">
+          <h2 class="text-xs font-bold uppercase tracking-wider text-indigo-400">Notes d'animation</h2>
+          <span id="trainer-timing-pill" class="text-xs px-2 py-0.5 rounded bg-slate-800 text-slate-300 font-mono">00:00 - 00:15</span>
+        </div>
+        <div id="trainer-notes" class="text-sm text-slate-300 leading-relaxed space-y-3"></div>
+        
+        <div class="border-t border-slate-800 pt-3 mt-auto">
+          <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Prompt de démo (1-clic)</h3>
+          <div class="flex gap-2">
+            <input id="demo-prompt-input" readonly class="flex-1 bg-slate-950 border border-slate-700 rounded px-2.5 py-1.5 text-xs text-slate-300 font-mono" value="Agis en expert supply chain...">
+            <button onclick="copyDemoPrompt()" class="px-3 py-1.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded text-xs font-medium">Copier</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Colonne 3 : Régie directe & Chronomètre -->
+      <div class="bg-slate-900 border border-slate-800 rounded-xl p-4 flex flex-col gap-4">
+        <h2 class="text-xs font-bold uppercase tracking-wider text-slate-400">Contrôle de session</h2>
+        <div class="grid grid-cols-2 gap-2">
+          <button onclick="prevSlide()" class="py-3 bg-slate-800 hover:bg-slate-700 text-white rounded-lg font-bold text-sm">◀ Précédente</button>
+          <button onclick="nextSlide()" class="py-3 bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg font-bold text-sm">Suivante ▶</button>
+        </div>
+
+        <div class="bg-slate-950 border border-slate-800 rounded-lg p-4 flex flex-col items-center gap-3 mt-2">
+          <span class="text-xs text-slate-400 uppercase tracking-wider">Sprint d'atelier</span>
+          <div id="trainer-timer-display" class="text-4xl font-mono font-black text-emerald-400">10:00</div>
+          <div class="flex gap-2">
+            <button onclick="startTimer()" class="px-4 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold rounded">Lancer</button>
+            <button onclick="pauseTimer()" class="px-4 py-1.5 bg-amber-600 hover:bg-amber-500 text-white text-xs font-bold rounded">Pause</button>
+            <button onclick="resetTimer()" class="px-4 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-bold rounded">10 min</button>
+          </div>
+        </div>
+
+        <div class="mt-auto bg-slate-950/50 border border-slate-800/80 rounded-lg p-3 text-xs text-slate-400">
+          <p class="font-bold text-slate-300 mb-1">💡 Astuce animation</p>
+          <p>Ouvre le Vidéoprojecteur sur ton 2ᵉ écran ou partage-le sur Zoom/Teams pendant que tu gardes ce cockpit ouvert.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================== -->
+    <!-- 3. VUE PARTICIPANT (Atelier Pratique)      -->
+    <!-- ========================================== -->
+    <section id="view-student" class="h-full w-full hidden overflow-y-auto p-4 sm:p-6 bg-slate-950">
+      <div class="max-w-3xl mx-auto space-y-6 pb-12">
+        <!-- Bannière slide synchronisée -->
+        <div class="bg-slate-900 border border-slate-800 rounded-xl p-4 flex items-center justify-between">
+          <div>
+            <span id="student-module-pill" class="text-xs font-semibold text-indigo-400">Module 2</span>
+            <h2 id="student-slide-title" class="text-lg font-bold text-white">L'art de la consigne (Méthode RTCF)</h2>
+          </div>
+          <span class="text-xs px-2 py-1 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-medium">Session en direct</span>
+        </div>
+
+        <!-- Bloc 1 : Matière brute copiable -->
+        <div class="bg-slate-900 border border-slate-800 rounded-xl p-5 space-y-3">
+          <div class="flex items-center justify-between">
+            <h3 class="text-sm font-bold text-slate-200 flex items-center gap-2">📄 Matière brute à tester</h3>
+            <button onclick="copyRawMaterial()" id="btn-copy-raw" class="text-xs px-3 py-1.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded font-medium transition flex items-center gap-1.5">
+              <span>Copier le texte brut</span>
+            </button>
+          </div>
+          <p class="text-xs text-slate-400">Copie ce cas réel en un clic et injecte-le dans ton outil d'IA pour réaliser l'exercice.</p>
+          <div id="student-raw-content" class="bg-slate-950 p-3 rounded-lg border border-slate-800 text-xs font-mono text-slate-300 whitespace-pre-line leading-relaxed max-h-48 overflow-y-auto">
+Bonjour, nous avons reçu la livraison de 400 cierges et 60 bougies votives ce matin. Le carton principal était déchiré et 2 cartons de cierges sont fendus. Merci de nous renvoyer ça rapidement ou on annule le prélèvement. Cordialement, Paroisse Saint-Pierre.
+          </div>
+        </div>
+
+        <!-- Bloc 2 : Constructeur de prompt RTCF interactif -->
+        <div class="bg-slate-900 border border-slate-800 rounded-xl p-5 space-y-4">
+          <h3 class="text-sm font-bold text-slate-200 flex items-center gap-2">🛠️ Générateur de prompt guidé (RTCF)</h3>
+          
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+            <div>
+              <label class="block font-semibold text-indigo-400 mb-1">R - Rôle</label>
+              <input type="text" id="rtcf-role" oninput="updateRTCFOutput()" placeholder="Ex: Responsable service client..." class="w-full bg-slate-950 border border-slate-800 rounded px-3 py-2 text-slate-200 focus:outline-none focus:border-indigo-500">
+            </div>
+            <div>
+              <label class="block font-semibold text-indigo-400 mb-1">T - Tâche</label>
+              <input type="text" id="rtcf-task" oninput="updateRTCFOutput()" placeholder="Ex: Rédiger une réponse rassurante..." class="w-full bg-slate-950 border border-slate-800 rounded px-3 py-2 text-slate-200 focus:outline-none focus:border-indigo-500">
+            </div>
+            <div>
+              <label class="block font-semibold text-indigo-400 mb-1">C - Contexte</label>
+              <input type="text" id="rtcf-context" oninput="updateRTCFOutput()" placeholder="Ex: Livraison abîmée, client historique..." class="w-full bg-slate-950 border border-slate-800 rounded px-3 py-2 text-slate-200 focus:outline-none focus:border-indigo-500">
+            </div>
+            <div>
+              <label class="block font-semibold text-indigo-400 mb-1">F - Format & Contraintes</label>
+              <input type="text" id="rtcf-format" oninput="updateRTCFOutput()" placeholder="Ex: 3 paragraphes, sans jargon..." class="w-full bg-slate-950 border border-slate-800 rounded px-3 py-2 text-slate-200 focus:outline-none focus:border-indigo-500">
+            </div>
+          </div>
+
+          <div class="pt-2">
+            <div class="flex items-center justify-between mb-1.5">
+              <span class="text-xs font-bold text-slate-300">Prompt assemblé :</span>
+              <button onclick="copyGeneratedRTCF()" class="text-xs text-indigo-400 hover:text-indigo-300 font-medium">Copier mon prompt</button>
+            </div>
+            <div id="rtcf-result" class="bg-slate-950 border border-slate-800 rounded-lg p-3 text-xs font-mono text-slate-400 min-h-[4rem] whitespace-pre-wrap">Remplis les champs ci-dessus pour générer ton prompt automatiquement.</div>
+          </div>
+        </div>
+
+        <!-- Bloc 3 : Solution suggérée (masquée par défaut) -->
+        <div class="bg-slate-900 border border-slate-800 rounded-xl p-5">
+          <button onclick="toggleSolution()" class="w-full flex items-center justify-between text-left">
+            <span class="text-sm font-bold text-amber-400 flex items-center gap-2">💡 Solution & Prompt modèle suggéré</span>
+            <span id="solution-chevron" class="text-slate-400 text-xs">Afficher ▼</span>
+          </button>
+          <div id="solution-box" class="hidden mt-4 pt-4 border-t border-slate-800 text-xs font-mono text-emerald-300 whitespace-pre-wrap leading-relaxed bg-slate-950 p-3 rounded-lg border border-emerald-950">
+Agis en responsable du service après-vente d'une entreprise artisanale réputée.
+Tâche : Rédige un e-mail de réponse à la Paroisse Saint-Pierre suite à leur réclamation sur un colis endommagé.
+Contexte : C'est un client fidèle depuis 10 ans. Les colis de remplacement partent dès demain matin sans frais.
+Contraintes : Ton courtois, empathique mais très professionnel. Propose une solution immédiate en 3 points clairs. Zéro formule passive.
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ========================================== -->
+  <!-- MOTEUR JS & DONNÉES DE FORMATION           -->
+  <!-- ========================================== -->
+  <script>
+    // 1. DÉFINITION DU CONTENU PÉDAGOGIQUE (4 HEURES)
+    const slidesData = [
+      {
+        id: 0,
+        badge: "00:00 - 00:15 | Module 0",
+        title: "L'Électrochoc",
+        subtitle: "Passer du gadget au réflexe métier qui libère 20 % de votre semaine.",
+        notes: "Lancer la session sans tourner autour du pot. Exécuter un prompt médiocre en direct devant la salle pour montrer pourquoi 90 % des gens sont déçus par l'IA.",
+        demoPrompt: "Écris une réponse à ce client mécontent.",
+        screenHTML: `
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-2xl w-full text-left">
+            <div class="p-4 rounded-xl bg-rose-950/30 border border-rose-900/50">
+              <span class="text-xs font-bold text-rose-400 uppercase">Ce que font 90% des gens</span>
+              <p class="text-sm text-slate-300 mt-2">« Fais-moi un résumé » ou « Écris un mail » $\\rightarrow$ Résultat plat, générique, inexploitable.</p>
+            </div>
+            <div class="p-4 rounded-xl bg-emerald-950/30 border border-emerald-900/50">
+              <span class="text-xs font-bold text-emerald-400 uppercase">L'objectif aujourd'hui</span>
+              <p class="text-sm text-slate-300 mt-2">Méthode rigoureuse + cas réels d'entreprise $\\rightarrow$ 45 min gagnées chaque jour.</p>
+            </div>
+          </div>
+        `,
+        rawMaterial: "Exemple de mail client reçu : 'Bonjour, nous n'avons rien reçu à ce jour, merci de faire le nécessaire.'"
+      },
+      {
+        id: 1,
+        badge: "00:15 - 00:50 | Module 1",
+        title: "Comprendre la machine & Sécurité RGPD",
+        subtitle: "Un LLM prédit des probabilités de mots. Il ne 'réfléchit' pas. Ne jamais injecter de données secrètes.",
+        notes: "Insister sur les hallucinations et la règle d'or : ce qui rentre dans un modèle public peut servir à l'entraînement sauf configuration explicite.",
+        demoPrompt: "Quelles sont les 3 règles de sécurité RGPD indispensables en TPE/PME ?",
+        screenHTML: `
+          <div class="grid grid-cols-3 gap-4 max-w-3xl w-full text-left text-xs">
+            <div class="p-4 rounded-lg bg-slate-900 border border-slate-800">
+              <span class="font-bold text-amber-400 block mb-1">⚠️ Hallucinations</span>
+              L'IA privilégie la fluidité et la certitude sur la vérité factuelle.
+            </div>
+            <div class="p-4 rounded-lg bg-slate-900 border border-slate-800">
+              <span class="font-bold text-rose-400 block mb-1">🛑 Zéro Secret</span>
+              Pas de fichiers clients nominatifs, RIB ou secrets d'affaires.
+            </div>
+            <div class="p-4 rounded-lg bg-slate-900 border border-slate-800">
+              <span class="font-bold text-emerald-400 block mb-1">✅ Anonymisation</span>
+              Remplacer les vrais noms par [Client A] et [Montant B].
+            </div>
+          </div>
+        `,
+        rawMaterial: "Fichier type à anonymiser : Dupont SARL - SIRET 452899100021 - Facture impayée 12 450 € TTC."
+      },
+      {
+        id: 2,
+        badge: "00:50 - 01:50 | Module 2",
+        title: "L'art de la consigne (Méthode RTCF)",
+        subtitle: "Rôle • Tâche • Contexte • Format & Contraintes.",
+        notes: "Faire ouvrir le module RTCF sur les ordinateurs des participants. Donner 15 min de sprint sur le cas de la réclamation client.",
+        demoPrompt: "Rôle: Directeur financier. Tâche: Analyser ce tableau. Contexte: Clôture annuelle. Format: 3 points clés sans jargon.",
+        screenHTML: `
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 max-w-3xl w-full text-left text-xs">
+            <div class="p-3 bg-slate-900 border border-indigo-500/40 rounded-lg"><span class="font-black text-indigo-400 block text-base">R</span><span class="font-bold">Rôle</span><p class="text-slate-400 mt-1">L'expert incarné</p></div>
+            <div class="p-3 bg-slate-900 border border-indigo-500/40 rounded-lg"><span class="font-black text-indigo-400 block text-base">T</span><span class="font-bold">Tâche</span><p class="text-slate-400 mt-1">L'action exacte</p></div>
+            <div class="p-3 bg-slate-900 border border-indigo-500/40 rounded-lg"><span class="font-black text-indigo-400 block text-base">C</span><span class="font-bold">Contexte</span><p class="text-slate-400 mt-1">Matière & enjeux</p></div>
+            <div class="p-3 bg-slate-900 border border-indigo-500/40 rounded-lg"><span class="font-black text-indigo-400 block text-base">F</span><span class="font-bold">Format</span><p class="text-slate-400 mt-1">Style & contraintes</p></div>
+          </div>
+        `,
+        rawMaterial: "Bonjour, nous avons reçu la livraison de 400 cierges et 60 bougies votives ce matin. Le carton principal était déchiré et 2 cartons de cierges sont fendus. Merci de nous renvoyer ça rapidement ou on annule le prélèvement. Cordialement, Paroisse Saint-Pierre."
+      },
+      {
+        id: 3,
+        badge: "02:05 - 03:00 | Module 3",
+        title: "Super-pouvoirs du quotidien en PME",
+        subtitle: "Tableurs, extraction de données brutes et synthèses d'appels d'offres.",
+        notes: "Atelier 2 : Traitement d'un document brut dense. Montrer la bascule Microsoft Copilot vs Google Workspace selon le choix de la salle.",
+        demoPrompt: "Extrais sous forme de tableau CSV à 3 colonnes (Date, Fournisseur, Montant HT) le texte suivant...",
+        screenHTML: `
+          <div class="max-w-2xl w-full text-left bg-slate-900 border border-slate-800 p-4 rounded-xl text-xs space-y-2">
+            <span class="font-bold text-indigo-400 uppercase">Cas Pratique PME</span>
+            <p class="text-slate-300">Nettoyage d'un relevé d'opérations bancaires non trié et génération instantanée d'un tableau récapitulatif par catégorie de dépense.</p>
+          </div>
+        `,
+        rawMaterial: "01/09 CARREFOUR LE PUY 45.20 EUR | 02/09 TOTAL ENERGIES RELAIS 78.00 EUR | 02/09 FACTURE EDF ENTREPRISE 340.50 EUR | 03/09 VIR RECU CLIENT ST ETIENNE 1200.00 EUR"
+      },
+      {
+        id: 4,
+        badge: "03:00 - 03:45 | Module 4",
+        title: "Créer son assistant métier dédié",
+        subtitle: "Personnaliser les instructions permanentes pour ne plus jamais répéter son contexte.",
+        notes: "Chaque stagiaire configure ses Custom Instructions adaptées à son métier (ADV, Vente, Direction, Comptabilité).",
+        demoPrompt: "Tu es mon assistant de gestion. Tu connais mes gammes de produits et nos conditions générales de vente...",
+        screenHTML: `
+          <div class="text-slate-300 text-sm max-w-xl">
+            <p class="mb-3">Ne réexpliquez plus jamais qui vous êtes. Vos instructions permanentes mémorisent vos préférences, contraintes de style et critères métiers.</p>
+          </div>
+        `,
+        rawMaterial: "Paramètres > Instructions personnalisées : Rédiger son persona professionnel."
+      },
+      {
+        id: 5,
+        badge: "03:45 - 04:00 | Module 5",
+        title: "Plan d'action & Débrief",
+        subtitle: "Une tâche concrète automatisée dès demain matin au bureau.",
+        notes: "Tour de table rapide : chaque participant s'engage sur UNE tâche récurrente à traiter avec son assistant dès demain.",
+        demoPrompt: "Fais-moi la synthèse de mes actions prioritaires pour la semaine.",
+        screenHTML: `
+          <div class="text-center">
+            <span class="text-emerald-400 font-bold text-xl block mb-2">Formation clôturée avec succès</span>
+            <p class="text-slate-400 text-xs">Téléchargez votre mémo de prompts et appliquez la méthode dès demain.</p>
+          </div>
+        `,
+        rawMaterial: "Fiche mémo KerIA : Méthode RTCF, règles de sécurité RGPD et les 10 prompts indispensables en PME."
+      }
+    ];
+
+    // 2. ÉTAT GLOBAL ET CANAL TEMPS RÉEL (BroadcastChannel pour le direct multi-écrans)
+    let currentSlide = 0;
+    let timerSeconds = 600;
+    let timerInterval = null;
+    let branches = { level: 'beginner', ecosystem: 'google' };
+
+    // Ce canal permet à l'onglet formateur de piloter l'onglet vidéoprojecteur instantanément
+    const channel = new BroadcastChannel('keria_session_channel');
+
+    channel.onmessage = (event) => {
+      const data = event.data;
+      if (data.type === 'CHANGE_SLIDE') {
+        currentSlide = data.slide;
+        renderSlide();
+      } else if (data.type === 'TIMER_UPDATE') {
+        updateTimerDisplay(data.seconds);
+      } else if (data.type === 'BRANCH_UPDATE') {
+        branches = data.branches;
+      }
+    };
+
+    // 3. GESTION DU CHANGEMENT DE VUE
+    function switchView(viewId) {
+      document.getElementById('view-screen').classList.add('hidden');
+      document.getElementById('view-trainer').classList.add('hidden');
+      document.getElementById('view-student').classList.add('hidden');
+      document.getElementById('view-' + viewId).classList.remove('hidden');
+
+      ['screen', 'trainer', 'student'].forEach(id => {
+        const btn = document.getElementById('btn-view-' + id);
+        if (id === viewId) {
+          btn.className = "px-3 py-1 rounded-md font-bold bg-indigo-600 text-white shadow";
+        } else {
+          btn.className = "px-3 py-1 rounded-md font-medium text-slate-400 hover:text-white";
+        }
+      });
+    }
+
+    // 4. RENDU DE LA SLIDE COURANTE
+    function renderSlide() {
+      const slide = slidesData[currentSlide];
+
+      // Vue Vidéoprojecteur
+      document.getElementById('screen-badge').innerText = slide.badge;
+      document.getElementById('screen-title').innerText = slide.title;
+      document.getElementById('screen-subtitle').innerText = slide.subtitle;
+      document.getElementById('screen-content').innerHTML = slide.screenHTML;
+
+      // Vue Formateur
+      document.getElementById('trainer-notes').innerHTML = `<p>${slide.notes}</p>`;
+      document.getElementById('trainer-timing-pill').innerText = slide.badge.split('|')[0].trim();
+      document.getElementById('demo-prompt-input').value = slide.demoPrompt;
+
+      // Vue Participant
+      document.getElementById('student-module-pill').innerText = slide.badge.split('|')[1]?.trim() || "Module";
+      document.getElementById('student-slide-title').innerText = slide.title;
+      document.getElementById('student-raw-content').innerText = slide.rawMaterial;
+
+      renderTrainerSlideList();
+    }
+
+    function renderTrainerSlideList() {
+      const container = document.getElementById('trainer-slide-list');
+      container.innerHTML = '';
+      slidesData.forEach((s, idx) => {
+        const btn = document.createElement('button');
+        btn.onclick = () => goToSlide(idx);
+        btn.className = `p-2 rounded-lg text-left text-xs transition ${
+          idx === currentSlide
+            ? 'bg-indigo-600/20 border border-indigo-500 text-indigo-300 font-bold'
+            : 'bg-slate-950 border border-slate-800 text-slate-400 hover:bg-slate-800 hover:text-slate-200'
+        }`;
+        btn.innerText = `${s.id}. ${s.title}`;
+        container.appendChild(btn);
+      });
+    }
+
+    // 5. NAVIGATION SYNCHRONISÉE
+    function nextSlide() {
+      if (currentSlide < slidesData.length - 1) {
+        currentSlide++;
+        renderSlide();
+        channel.postMessage({ type: 'CHANGE_SLIDE', slide: currentSlide });
+      }
+    }
+
+    function prevSlide() {
+      if (currentSlide > 0) {
+        currentSlide--;
+        renderSlide();
+        channel.postMessage({ type: 'CHANGE_SLIDE', slide: currentSlide });
+      }
+    }
+
+    function goToSlide(index) {
+      currentSlide = index;
+      renderSlide();
+      channel.postMessage({ type: 'CHANGE_SLIDE', slide: currentSlide });
+    }
+
+    function setBranch(category, value) {
+      branches[category] = value;
+      channel.postMessage({ type: 'BRANCH_UPDATE', branches });
+      alert(`Bifurcation activée : ${category} -> ${value}`);
+    }
+
+    // 6. GESTION DU CHRONOMÈTRE
+    function formatTime(sec) {
+      const m = Math.floor(sec / 60).toString().padStart(2, '0');
+      const s = (sec % 60).toString().padStart(2, '0');
+      return `${m}:${s}`;
+    }
+
+    function updateTimerDisplay(sec) {
+      const formatted = formatTime(sec);
+      document.getElementById('global-timer-display').innerText = formatted;
+      const trainerTimer = document.getElementById('trainer-timer-display');
+      if (trainerTimer) trainerTimer.innerText = formatted;
+    }
+
+    function startTimer() {
+      if (timerInterval) clearInterval(timerInterval);
+      timerInterval = setInterval(() => {
+        if (timerSeconds > 0) {
+          timerSeconds--;
+          updateTimerDisplay(timerSeconds);
+          channel.postMessage({ type: 'TIMER_UPDATE', seconds: timerSeconds });
+        } else {
+          clearInterval(timerInterval);
+        }
+      }, 1000);
+    }
+
+    function pauseTimer() {
+      if (timerInterval) clearInterval(timerInterval);
+    }
+
+    function resetTimer() {
+      pauseTimer();
+      timerSeconds = 600;
+      updateTimerDisplay(timerSeconds);
+      channel.postMessage({ type: 'TIMER_UPDATE', seconds: timerSeconds });
+    }
+
+    // 7. FONCTIONNALITÉS ÉLÈVES (COPIE & CONSTRUCTEUR RTCF)
+    function copyRawMaterial() {
+      const text = document.getElementById('student-raw-content').innerText;
+      navigator.clipboard.writeText(text);
+      const btn = document.getElementById('btn-copy-raw');
+      btn.innerText = "Copié !";
+      setTimeout(() => btn.innerText = "Copier le texte brut", 2000);
+    }
+
+    function copyDemoPrompt() {
+      const text = document.getElementById('demo-prompt-input').value;
+      navigator.clipboard.writeText(text);
+      alert("Prompt copié dans le presse-papier !");
+    }
+
+    function updateRTCFOutput() {
+      const r = document.getElementById('rtcf-role').value.trim();
+      const t = document.getElementById('rtcf-task').value.trim();
+      const c = document.getElementById('rtcf-context').value.trim();
+      const f = document.getElementById('rtcf-format').value.trim();
+
+      let parts = [];
+      if (r) parts.push(`RÔLE : ${r}`);
+      if (t) parts.push(`TÂCHE : ${t}`);
+      if (c) parts.push(`CONTEXTE : ${c}`);
+      if (f) parts.push(`FORMAT & CONTRAINTES : ${f}`);
+
+      const resultBox = document.getElementById('rtcf-result');
+      resultBox.innerText = parts.length > 0 
+        ? parts.join('\n\n') 
+        : "Remplis les champs ci-dessus pour générer ton prompt automatiquement.";
+    }
+
+    function copyGeneratedRTCF() {
+      const text = document.getElementById('rtcf-result').innerText;
+      navigator.clipboard.writeText(text);
+      alert("Prompt RTCF copié !");
+    }
+
+    function toggleSolution() {
+      const box = document.getElementById('solution-box');
+      const chevron = document.getElementById('solution-chevron');
+      if (box.classList.contains('hidden')) {
+        box.classList.remove('hidden');
+        chevron.innerText = "Masquer ▲";
+      } else {
+        box.classList.add('hidden');
+        chevron.innerText = "Afficher ▼";
+      }
+    }
+
+    // DÉMARRAGE INITIAL SUR LA VUE VIDÉOPROJECTEUR
+    switchView('screen');
+    renderSlide();
+  </script>
+</body>
+</html>
