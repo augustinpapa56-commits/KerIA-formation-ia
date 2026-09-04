@@ -1,528 +1,1586 @@
 <!DOCTYPE html>
-<html lang="fr" class="h-full bg-slate-950 text-slate-100">
+<html lang="fr" class="h-full bg-slate-50 text-[#15244C] antialiased">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>KerIA — Formation interactive</title>
-  <!-- Tailwind CSS CDN pour un design épuré et moderne -->
+  <title>KerIA — Formation Interactive sur l'IA en Entreprise</title>
+  
+  <!-- CDN Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
       theme: {
         extend: {
           colors: {
-            brand: {
-              50: '#eef2ff',
-              500: '#6366f1',
-              600: '#4f46e5',
-              700: '#4338ca',
-              900: '#312e81'
+            keria: {
+              navy: '#15244C',       /* Bleu marine officiel (Ker + moitié gauche blason) */
+              navyDark: '#0B152D',   /* Nuance marine sombre d'appui */
+              navyLight: '#23376B',  /* Nuance marine intermédiaire */
+              blue: '#4193F6',       /* Bleu azur lumineux (iA + contour droit blason) */
+              blueHover: '#2B82EC',  /* Bleu azur au survol */
+              blueSoft: '#EFF6FF',   /* Fond doux bleuté pour cartes et badges */
+              blueBorder: '#BFDBFE', /* Bordure bleue subtile */
+              canvas: '#F8FAFC',     /* Fond clair épuré */
+              card: '#FFFFFF',       /* Blanc pur des cartes */
+              border: '#E2E8F0',     /* Bordure neutre discrète */
+              muted: '#64748B',      /* Texte secondaire */
+              dim: '#94A3B8'         /* Texte tertiaire */
             }
+          },
+          fontFamily: {
+            sans: ['-apple-system', 'BlinkMacSystemFont', 'SF Pro Text', 'SF Pro Display', 'Inter', 'Segoe UI', 'Roboto', 'sans-serif'],
+            mono: ['SF Mono', 'ui-monospace', 'Menlo', 'Monaco', 'Courier New', 'monospace']
           }
         }
       }
-    }
+    };
   </script>
+
+  <!-- Bibliothèque autonome de génération locale de QR Code -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
   <style>
-    /* Barre de défilement discrète */
-    ::-webkit-scrollbar { width: 6px; height: 6px; }
-    ::-webkit-scrollbar-thumb { background: #334155; border-radius: 3px; }
-    ::-webkit-scrollbar-thumb:hover { background: #475569; }
+    /* Esthétique claire épurée Apple & KeriA */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #F1F5F9;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #CBD5E1;
+      border-radius: 9999px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #94A3B8;
+    }
+
+    .keria-card {
+      background: #FFFFFF;
+      border: 1px solid #E2E8F0;
+      box-shadow: 0 4px 20px -4px rgba(21, 36, 76, 0.05), 0 1px 3px 0 rgba(21, 36, 76, 0.03);
+    }
+
+    .keria-card-elevated {
+      background: #FFFFFF;
+      border: 1px solid #E2E8F0;
+      box-shadow: 0 12px 32px -6px rgba(21, 36, 76, 0.08), 0 4px 6px -2px rgba(21, 36, 76, 0.03);
+    }
+
+    * {
+      -webkit-tap-highlight-color: transparent;
+    }
   </style>
 </head>
-<body class="h-full flex flex-col font-sans antialiased overflow-hidden select-none">
+<body class="h-full flex flex-col selection:bg-keria-blue selection:text-white bg-keria-canvas font-sans overflow-hidden text-keria-navy">
 
-  <!-- BARRE SUPÉRIEURE DE NAVIGATION GLOBALE -->
-  <header class="h-14 border-b border-slate-800 bg-slate-900/80 backdrop-blur px-4 flex items-center justify-between z-50">
+  <!-- ================= BARRE DE NAVIGATION CLAIRE & LOGO KERIA ================= -->
+  <header id="main-header" class="h-16 flex-none border-b border-slate-200/90 bg-white/90 backdrop-blur-xl px-4 sm:px-6 flex items-center justify-between z-50 shadow-xs">
     <div class="flex items-center gap-3">
-      <span class="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-indigo-600 font-black text-white text-sm shadow-md shadow-indigo-500/20">K</span>
-      <span class="font-bold tracking-tight text-white">Ker<span class="text-indigo-400">IA</span></span>
-      <span class="text-xs px-2 py-0.5 rounded-full bg-slate-800 text-slate-400 border border-slate-700 hidden sm:inline">Formation Pro 4h</span>
+      <!-- Blason officiel KeriA fidèlement reconstitué en SVG haute définition -->
+      <div class="flex items-center gap-2.5">
+        <svg viewBox="0 0 100 120" class="w-7 h-8 drop-shadow-xs flex-none" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <!-- Moitié gauche du bouclier (Bleu Marine plein #15244C) -->
+          <path d="M 50 10 L 14 24 C 14 68 28 98 50 114 L 50 10 Z" fill="#15244C" />
+          <!-- Moitié droite du bouclier (Contour Bleu Azur #4193F6) -->
+          <path d="M 50 10 L 86 24 C 86 68 72 98 50 114 L 50 98 C 65 85 73 63 73 34 L 50 25 Z" fill="#4193F6" />
+        </svg>
+        <div class="flex items-baseline">
+          <span class="font-black text-xl tracking-tight text-keria-navy">Ker</span>
+          <span class="font-black text-xl tracking-tight text-keria-blue">iA</span>
+        </div>
+      </div>
+      <span class="text-xs text-keria-muted font-medium tracking-tight hidden sm:inline pl-2 border-l border-slate-200">Formation IA Entreprise</span>
     </div>
 
-    <!-- Sélecteur de Rôle -->
-    <div class="flex items-center bg-slate-950 p-1 rounded-lg border border-slate-800 text-xs">
-      <button onclick="switchView('screen')" id="btn-view-screen" class="px-3 py-1 rounded-md font-medium transition-all text-slate-400 hover:text-white">📽️ Vidéoprojecteur</button>
-      <button onclick="switchView('trainer')" id="btn-view-trainer" class="px-3 py-1 rounded-md font-medium transition-all text-slate-400 hover:text-white">🎛️ Régie Formateur</button>
-      <button onclick="switchView('student')" id="btn-view-student" class="px-3 py-1 rounded-md font-medium transition-all text-slate-400 hover:text-white">📱 Participant</button>
-    </div>
+    <!-- Sélecteur segmenté en pilule (Style Apple sobre) -->
+    <nav class="flex items-center bg-slate-100 p-1 rounded-full border border-slate-200 text-xs">
+      <button onclick="setView('presentation')" id="tab-presentation" class="tab-btn px-4 py-1.5 rounded-full font-bold transition-all text-keria-navy bg-white shadow-xs flex items-center gap-1.5">
+        <svg class="w-3.5 h-3.5 text-keria-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 4v16M17 4v16M3 8h4m10 0h4M3 12h18M3 16h4m10 0h4M4 20h16a1 1 0 001-1V5a1 1 0 00-1-1H4a1 1 0 00-1 1v14a1 1 0 001 1z"/></svg>
+        <span>Présentation</span>
+      </button>
+      <button onclick="setView('cockpit')" id="tab-cockpit" class="tab-btn px-4 py-1.5 rounded-full font-semibold transition-all text-keria-muted hover:text-keria-navy flex items-center gap-1.5">
+        <svg class="w-3.5 h-3.5 opacity-80" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"/></svg>
+        <span>Régie</span>
+      </button>
+      <button onclick="setView('student')" id="tab-student" class="tab-btn px-4 py-1.5 rounded-full font-semibold transition-all text-keria-muted hover:text-keria-navy flex items-center gap-1.5">
+        <svg class="w-3.5 h-3.5 opacity-80" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
+        <span>Stagiaire</span>
+      </button>
+    </nav>
 
-    <!-- Timer Global Synchro -->
-    <div class="flex items-center gap-3">
-      <div id="global-timer-display" class="font-mono text-sm px-2.5 py-1 rounded bg-slate-800 border border-slate-700 text-emerald-400 font-bold">10:00</div>
+    <!-- Contrôles et statut multi-écrans -->
+    <div class="flex items-center gap-2">
+      <button onclick="openMultiScreenModal(true)" class="text-xs bg-slate-100 hover:bg-slate-200/80 text-keria-navy font-semibold px-3 py-1.5 rounded-full border border-slate-200 flex items-center gap-1.5 transition shadow-2xs">
+        <svg class="w-3.5 h-3.5 text-keria-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM4 13a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6zM16 13a1 1 0 011-1h2a1 1 0 011 1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1v-6z"/></svg>
+        <span class="hidden md:inline">3 Écrans</span>
+      </button>
+
+      <button onclick="toggleQrModal(true)" title="Afficher le QR Code de salle" class="text-xs bg-keria-blueSoft hover:bg-keria-blue/15 text-keria-blue p-2 rounded-full border border-keria-blueBorder flex items-center transition">
+        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z"/></svg>
+      </button>
+
+      <div id="sync-badge" class="flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold text-emerald-700 bg-emerald-50 border border-emerald-200">
+        <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+        <span class="hidden sm:inline">Connecté</span>
+      </div>
     </div>
   </header>
 
-  <!-- CONTENEUR PRINCIPAL DES VUES -->
-  <main class="flex-1 relative overflow-hidden bg-slate-950">
+  <!-- ================= ZONE PRINCIPALE D'AFFICHAGE CLAIRE ================= -->
+  <main class="flex-1 relative overflow-hidden bg-keria-canvas">
 
-    <!-- ========================================== -->
-    <!-- 1. VUE VIDÉOPROJECTEUR (Grand Écran)       -->
-    <!-- ========================================== -->
-    <section id="view-screen" class="h-full w-full flex flex-col items-center justify-center p-8 transition-opacity duration-300">
-      <div class="max-w-5xl w-full flex flex-col items-center text-center space-y-6">
-        <div id="screen-badge" class="px-4 py-1 rounded-full text-xs font-semibold tracking-wider uppercase bg-indigo-500/10 text-indigo-400 border border-indigo-500/20">Module 0</div>
-        <h1 id="screen-title" class="text-4xl sm:text-6xl font-black text-white tracking-tight leading-tight">L'Électrochoc</h1>
-        <p id="screen-subtitle" class="text-xl sm:text-2xl text-slate-400 max-w-3xl leading-relaxed">Passer du gadget au réflexe métier qui libère 20 % de sa semaine.</p>
-        
-        <!-- Contenu dynamique de la slide -->
-        <div id="screen-content" class="w-full mt-6 flex justify-center"></div>
-      </div>
-    </section>
+    <!-- ---------------- VUE 1 : GRAND ÉCRAN VIDÉOPROJECTEUR ---------------- -->
+    <section id="view-presentation" class="h-full w-full flex flex-col p-8 sm:p-12 overflow-y-auto">
+      <!-- En-tête sobre et lumineux -->
+      <div class="max-w-6xl mx-auto w-full flex-none pb-6 border-b border-slate-200 flex flex-col md:flex-row md:items-end justify-between gap-4">
+        <div>
+          <div class="flex items-center gap-2.5 mb-2.5">
+            <span id="pres-badge" class="text-xs font-bold tracking-wider text-keria-blue bg-keria-blueSoft px-3 py-1 rounded-full uppercase font-mono border border-keria-blueBorder">
+              Module 0
+            </span>
+            <span class="text-keria-dim text-xs">•</span>
+            <span id="pres-slide-num" class="text-xs text-keria-muted font-mono tracking-tight font-medium">1 / 10</span>
+          </div>
+          <h1 id="pres-title" class="text-3xl sm:text-5xl font-black tracking-tight text-keria-navy leading-tight">
+            Titre de la diapositive
+          </h1>
+          <p id="pres-subtitle" class="text-keria-muted text-base sm:text-lg mt-2 max-w-2xl font-normal leading-relaxed">
+            Sous-titre descriptif
+          </p>
+        </div>
 
-    <!-- ========================================== -->
-    <!-- 2. VUE FORMATEUR (Cockpit / Télécommande) -->
-    <!-- ========================================== -->
-    <section id="view-trainer" class="h-full w-full hidden grid-cols-1 lg:grid-cols-3 gap-4 p-4 overflow-hidden bg-slate-950">
-      <!-- Colonne 1 : Navigation & Arborescence -->
-      <div class="bg-slate-900 border border-slate-800 rounded-xl p-4 flex flex-col gap-4 overflow-y-auto">
-        <h2 class="text-xs font-bold uppercase tracking-wider text-slate-400">Déroulé & Carrefours</h2>
-        <div id="trainer-slide-list" class="flex flex-col gap-2"></div>
-        
-        <div class="border-t border-slate-800 pt-3">
-          <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Bifurcation active</h3>
-          <div class="grid grid-cols-2 gap-2 text-xs">
-            <button onclick="setBranch('level', 'beginner')" id="btn-level-beg" class="p-2 rounded bg-indigo-600 text-white font-medium border border-indigo-500">Débutant (RTCF)</button>
-            <button onclick="setBranch('level', 'advanced')" id="btn-level-adv" class="p-2 rounded bg-slate-800 text-slate-400 font-medium hover:bg-slate-700">Avancé (Few-Shot)</button>
-            <button onclick="setBranch('ecosystem', 'microsoft')" id="btn-eco-ms" class="p-2 rounded bg-slate-800 text-slate-400 font-medium hover:bg-slate-700">Microsoft 365</button>
-            <button onclick="setBranch('ecosystem', 'google')" id="btn-eco-gg" class="p-2 rounded bg-indigo-600 text-white font-medium border border-indigo-500">Google / Gemini</button>
+        <!-- Chronomètre épuré blanc -->
+        <div id="pres-timer-box" class="hidden flex-none keria-card px-5 py-2.5 rounded-2xl flex items-center gap-4">
+          <div class="text-right">
+            <span class="text-[10px] uppercase font-bold text-keria-muted tracking-wider block">Chrono</span>
+            <span id="pres-timer-label" class="text-xs font-semibold text-keria-blue">Atelier</span>
+          </div>
+          <div id="pres-timer-val" class="font-mono text-3xl font-light text-keria-navy tracking-tight">
+            10:00
           </div>
         </div>
       </div>
 
-      <!-- Colonne 2 : Téléprompteur & Scripts d'animation -->
-      <div class="bg-slate-900 border border-slate-800 rounded-xl p-4 flex flex-col gap-4 overflow-y-auto">
-        <div class="flex items-center justify-between">
-          <h2 class="text-xs font-bold uppercase tracking-wider text-indigo-400">Notes d'animation</h2>
-          <span id="trainer-timing-pill" class="text-xs px-2 py-0.5 rounded bg-slate-800 text-slate-300 font-mono">00:00 - 00:15</span>
-        </div>
-        <div id="trainer-notes" class="text-sm text-slate-300 leading-relaxed space-y-3"></div>
-        
-        <div class="border-t border-slate-800 pt-3 mt-auto">
-          <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Prompt de démo (1-clic)</h3>
-          <div class="flex gap-2">
-            <input id="demo-prompt-input" readonly class="flex-1 bg-slate-950 border border-slate-700 rounded px-2.5 py-1.5 text-xs text-slate-300 font-mono" value="Agis en expert supply chain...">
-            <button onclick="copyDemoPrompt()" class="px-3 py-1.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded text-xs font-medium">Copier</button>
-          </div>
-        </div>
+      <!-- Corps dynamique injecté -->
+      <div id="pres-content" class="max-w-6xl mx-auto w-full flex-1 flex flex-col justify-center py-6">
+        <!-- Rendu dynamique JS -->
       </div>
 
-      <!-- Colonne 3 : Régie directe & Chronomètre -->
-      <div class="bg-slate-900 border border-slate-800 rounded-xl p-4 flex flex-col gap-4">
-        <h2 class="text-xs font-bold uppercase tracking-wider text-slate-400">Contrôle de session</h2>
-        <div class="grid grid-cols-2 gap-2">
-          <button onclick="prevSlide()" class="py-3 bg-slate-800 hover:bg-slate-700 text-white rounded-lg font-bold text-sm">◀ Précédente</button>
-          <button onclick="nextSlide()" class="py-3 bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg font-bold text-sm">Suivante ▶</button>
-        </div>
-
-        <div class="bg-slate-950 border border-slate-800 rounded-lg p-4 flex flex-col items-center gap-3 mt-2">
-          <span class="text-xs text-slate-400 uppercase tracking-wider">Sprint d'atelier</span>
-          <div id="trainer-timer-display" class="text-4xl font-mono font-black text-emerald-400">10:00</div>
-          <div class="flex gap-2">
-            <button onclick="startTimer()" class="px-4 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold rounded">Lancer</button>
-            <button onclick="pauseTimer()" class="px-4 py-1.5 bg-amber-600 hover:bg-amber-500 text-white text-xs font-bold rounded">Pause</button>
-            <button onclick="resetTimer()" class="px-4 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-bold rounded">10 min</button>
+      <!-- Sondage / Quiz Salle sobre & contrasté -->
+      <div id="pres-quiz-container" class="max-w-6xl mx-auto w-full flex-none pt-4 border-t border-slate-200">
+        <div class="keria-card p-5 rounded-2xl flex flex-col md:flex-row md:items-center justify-between gap-6">
+          <div class="flex-1">
+            <div class="flex items-center gap-2 mb-1.5">
+              <span class="text-[10px] font-bold uppercase tracking-wider text-keria-blue bg-keria-blueSoft px-2.5 py-0.5 rounded-full border border-keria-blueBorder">Sondage Salle en Direct</span>
+              <span class="text-keria-dim text-xs">•</span>
+              <span id="pres-quiz-total-votes" class="text-xs text-keria-muted font-mono font-medium">0 vote reçu</span>
+            </div>
+            <h3 id="pres-quiz-question" class="text-sm font-bold text-keria-navy">Question en cours...</h3>
           </div>
-        </div>
-
-        <div class="mt-auto bg-slate-950/50 border border-slate-800/80 rounded-lg p-3 text-xs text-slate-400">
-          <p class="font-bold text-slate-300 mb-1">💡 Astuce animation</p>
-          <p>Ouvre le Vidéoprojecteur sur ton 2ᵉ écran ou partage-le sur Zoom/Teams pendant que tu gardes ce cockpit ouvert.</p>
+          <!-- Barres de résultats en direct épurées aux couleurs KeriA -->
+          <div id="pres-quiz-bars" class="flex-1 space-y-2.5 text-xs">
+            <!-- Rendu JS des pourcentages -->
+          </div>
         </div>
       </div>
     </section>
 
-    <!-- ========================================== -->
-    <!-- 3. VUE PARTICIPANT (Atelier Pratique)      -->
-    <!-- ========================================== -->
-    <section id="view-student" class="h-full w-full hidden overflow-y-auto p-4 sm:p-6 bg-slate-950">
-      <div class="max-w-3xl mx-auto space-y-6 pb-12">
-        <!-- Bannière slide synchronisée -->
-        <div class="bg-slate-900 border border-slate-800 rounded-xl p-4 flex items-center justify-between">
+    <!-- ---------------- VUE 2 : COCKPIT RÉGIE FORMATEUR ---------------- -->
+    <section id="view-cockpit" class="h-full w-full p-4 overflow-hidden hidden">
+      <div class="h-full grid grid-cols-1 lg:grid-cols-12 gap-4">
+        
+        <!-- COLONNE 1 : Déroulé & Carrefours (3 cols) -->
+        <div class="lg:col-span-3 keria-card rounded-2xl flex flex-col overflow-hidden p-4">
+          <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+            <h2 class="text-xs font-bold uppercase tracking-wider text-keria-navy">
+              Déroulé Pédagogique
+            </h2>
+            <span id="cockpit-progress-badge" class="text-xs font-mono font-bold text-keria-blue bg-keria-blueSoft px-2 py-0.5 rounded-full border border-keria-blueBorder">1 / 10</span>
+          </div>
+
+          <!-- Liste scrollable des diapositives -->
+          <div id="cockpit-slide-list" class="flex-1 overflow-y-auto space-y-1.5 py-3 pr-1 text-xs">
+            <!-- Rendu JS -->
+          </div>
+
+          <!-- Carrefours discrets -->
+          <div class="pt-3 border-t border-slate-100 space-y-3">
+            <div>
+              <span class="text-[10px] font-bold text-keria-muted block mb-1.5 uppercase tracking-wider">Niveau Approfondi</span>
+              <div class="grid grid-cols-2 gap-1 bg-slate-100 p-1 rounded-xl border border-slate-200">
+                <button onclick="setBranch('level', 'rtcf')" id="btn-branch-rtcf" class="py-1.5 px-2 rounded-lg text-xs font-semibold transition text-center">RTCF</button>
+                <button onclick="setBranch('level', 'fewshot')" id="btn-branch-fewshot" class="py-1.5 px-2 rounded-lg text-xs font-semibold transition text-center">Few-Shot</button>
+              </div>
+            </div>
+
+            <div>
+              <span class="text-[10px] font-bold text-keria-muted block mb-1.5 uppercase tracking-wider">Écosystème</span>
+              <div class="grid grid-cols-3 gap-1 bg-slate-100 p-1 rounded-xl border border-slate-200 text-[11px]">
+                <button onclick="setBranch('ecosystem', 'm365')" id="btn-eco-m365" class="py-1.5 px-1 rounded-md font-semibold transition text-center">M365</button>
+                <button onclick="setBranch('ecosystem', 'google')" id="btn-eco-google" class="py-1.5 px-1 rounded-md font-semibold transition text-center">Google</button>
+                <button onclick="setBranch('ecosystem', 'standalone')" id="btn-eco-standalone" class="py-1.5 px-1 rounded-md font-semibold transition text-center">Web</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- COLONNE 2 : Script Pédagogique & Prompt de Démo (6 cols) -->
+        <div class="lg:col-span-6 keria-card rounded-2xl flex flex-col overflow-hidden p-5">
+          <div class="flex items-center justify-between pb-3.5 border-b border-slate-100">
+            <div>
+              <span id="cockpit-module-tag" class="text-[10px] font-mono font-bold text-keria-blue bg-keria-blueSoft px-2.5 py-0.5 rounded-full border border-keria-blueBorder uppercase tracking-wider">Module 0</span>
+              <h3 id="cockpit-title" class="text-base font-bold text-keria-navy mt-1">Titre de la slide</h3>
+            </div>
+            <span id="cockpit-time-slot" class="text-xs font-mono font-semibold text-keria-muted bg-slate-100 px-3 py-1 rounded-full border border-slate-200">00:00 - 00:15</span>
+          </div>
+
+          <!-- Notes orales du formateur -->
+          <div class="flex-1 overflow-y-auto py-4 space-y-4 pr-1">
+            <div>
+              <span class="text-[10px] uppercase font-bold tracking-wider text-keria-muted block mb-2">
+                Notes & Amorce Orale
+              </span>
+              <div id="cockpit-notes" class="bg-slate-50 border border-slate-200 rounded-xl p-4 text-xs text-slate-700 leading-relaxed font-sans whitespace-pre-line">
+                <!-- Texte oral injecté -->
+              </div>
+            </div>
+
+            <!-- Boîte Prompt Démo -->
+            <div class="bg-keria-blueSoft/40 border border-keria-blueBorder rounded-xl p-4">
+              <div class="flex items-center justify-between mb-2">
+                <span class="text-[10px] uppercase font-bold tracking-wider text-keria-blue">
+                  Prompt Démo Formateur
+                </span>
+                <button onclick="copyToClipboard(currentSlide().demoPrompt, this)" class="px-3 py-1 rounded-lg bg-keria-navy hover:bg-keria-navyLight text-xs font-bold text-white flex items-center gap-1.5 transition shadow-xs">
+                  <svg class="w-3.5 h-3.5 text-keria-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"/></svg>
+                  <span>Copier</span>
+                </button>
+              </div>
+              <p id="cockpit-demo-prompt" class="text-xs font-mono text-keria-navy bg-white p-3.5 rounded-lg border border-keria-blueBorder max-h-28 overflow-y-auto leading-relaxed shadow-inner">
+                <!-- Prompt injecté -->
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- COLONNE 3 : Télécommande & Chronomètre (3 cols) -->
+        <div class="lg:col-span-3 keria-card rounded-2xl flex flex-col justify-between p-4 overflow-hidden">
           <div>
-            <span id="student-module-pill" class="text-xs font-semibold text-indigo-400">Module 2</span>
-            <h2 id="student-slide-title" class="text-lg font-bold text-white">L'art de la consigne (Méthode RTCF)</h2>
+            <h2 class="text-xs font-bold uppercase tracking-wider text-keria-navy pb-3 border-b border-slate-100">
+              Contrôles de Régie
+            </h2>
+
+            <!-- Déploiement multi-écrans -->
+            <div class="my-3 p-3 bg-slate-50 rounded-xl border border-slate-200 space-y-2">
+              <span class="text-[10px] uppercase font-bold text-keria-muted tracking-wider block">Ouvrir un Écran</span>
+              <div class="grid grid-cols-2 gap-1.5 text-xs">
+                <button onclick="launchProjectorWindow()" class="p-2 rounded-lg bg-white hover:bg-slate-100 text-keria-navy border border-slate-200 font-bold transition text-center shadow-2xs">
+                  Vidéoprojecteur
+                </button>
+                <button onclick="launchStudentWindow()" class="p-2 rounded-lg bg-white hover:bg-slate-100 text-keria-navy border border-slate-200 font-bold transition text-center shadow-2xs">
+                  App Mobile
+                </button>
+              </div>
+            </div>
+
+            <!-- Boutons Précédente / Suivante -->
+            <div class="grid grid-cols-2 gap-2 my-3">
+              <button onclick="prevSlide()" class="py-2.5 px-3 rounded-xl bg-slate-100 hover:bg-slate-200 text-keria-navy font-bold text-xs flex items-center justify-center gap-1.5 transition active:scale-[0.98] border border-slate-200">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+                Précédente
+              </button>
+              <button onclick="nextSlide()" class="py-2.5 px-3 rounded-xl bg-keria-blue hover:bg-keria-blueHover text-white font-bold text-xs flex items-center justify-center gap-1.5 transition active:scale-[0.98] shadow-xs">
+                Suivante
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+              </button>
+            </div>
+
+            <!-- Chronomètre -->
+            <div class="bg-slate-50 border border-slate-200 rounded-xl p-3.5 space-y-3">
+              <div class="flex items-center justify-between">
+                <span class="text-[10px] uppercase font-bold text-keria-muted tracking-wider">Chronomètre</span>
+                <span id="cockpit-timer-state" class="text-[10px] font-bold text-keria-blue bg-keria-blueSoft px-2.5 py-0.5 rounded-full border border-keria-blueBorder">Prêt</span>
+              </div>
+              
+              <div class="text-center py-1">
+                <span id="cockpit-timer-display" class="font-mono text-3xl font-light text-keria-navy tracking-tight">10:00</span>
+              </div>
+
+              <div class="grid grid-cols-3 gap-1.5 text-[11px]">
+                <button onclick="setTimerDuration(10, 'Atelier 10 min')" class="bg-white hover:bg-slate-100 border border-slate-200 py-1 rounded-lg text-keria-muted hover:text-keria-navy font-medium transition">10m</button>
+                <button onclick="setTimerDuration(15, 'Atelier 15 min')" class="bg-white hover:bg-slate-100 border border-slate-200 py-1 rounded-lg text-keria-muted hover:text-keria-navy font-medium transition">15m</button>
+                <button onclick="setTimerDuration(15, 'Pause 15 min')" class="bg-keria-blueSoft hover:bg-keria-blue/20 border border-keria-blueBorder py-1 rounded-lg text-keria-blue font-bold transition">Pause</button>
+              </div>
+
+              <div class="grid grid-cols-3 gap-1.5 pt-1">
+                <button onclick="startTimer()" class="bg-keria-navy text-white font-bold text-xs py-2 rounded-lg hover:bg-keria-navyLight transition shadow-xs">
+                  Start
+                </button>
+                <button onclick="pauseTimer()" class="bg-slate-200 hover:bg-slate-300 text-keria-navy font-bold text-xs py-2 rounded-lg transition">
+                  Pause
+                </button>
+                <button onclick="resetTimer()" class="bg-white hover:bg-slate-100 border border-slate-200 text-keria-muted font-bold text-xs py-2 rounded-lg transition">
+                  Reset
+                </button>
+              </div>
+            </div>
           </div>
-          <span class="text-xs px-2 py-1 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-medium">Session en direct</span>
+
+          <!-- Journal des événements -->
+          <div class="pt-3 border-t border-slate-100">
+            <div class="flex items-center justify-between text-[11px] text-keria-muted mb-1.5">
+              <span class="font-semibold">Votes Quiz en direct :</span>
+              <button onclick="resetCurrentQuizVotes()" class="text-[10px] text-rose-600 hover:underline font-bold transition">
+                Réinitialiser
+              </button>
+            </div>
+            <div class="bg-slate-50 p-2.5 rounded-lg border border-slate-200 text-[10px] text-keria-muted font-mono h-16 overflow-y-auto space-y-1" id="cockpit-event-log">
+              <div>[Système] Prêt pour la session KeriA.</div>
+            </div>
+          </div>
         </div>
 
-        <!-- Bloc 1 : Matière brute copiable -->
-        <div class="bg-slate-900 border border-slate-800 rounded-xl p-5 space-y-3">
-          <div class="flex items-center justify-between">
-            <h3 class="text-sm font-bold text-slate-200 flex items-center gap-2">📄 Matière brute à tester</h3>
-            <button onclick="copyRawMaterial()" id="btn-copy-raw" class="text-xs px-3 py-1.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded font-medium transition flex items-center gap-1.5">
-              <span>Copier le texte brut</span>
+      </div>
+    </section>
+
+    <!-- ---------------- VUE 3 : ESPACE PARTICIPANT ---------------- -->
+    <section id="view-student" class="h-full w-full p-4 sm:p-8 overflow-y-auto hidden">
+      <div class="max-w-2xl mx-auto space-y-6 pb-16">
+        
+        <!-- Alerte direct synchronisé sobre -->
+        <div class="flex items-center justify-between keria-card p-4 rounded-2xl border-l-4 border-l-keria-blue">
+          <div class="flex items-center gap-3">
+            <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
+            <div>
+              <div class="text-[10px] uppercase font-bold text-keria-muted tracking-wider">Direct Session</div>
+              <div id="student-current-slide-title" class="text-xs font-bold text-keria-navy truncate max-w-[200px] sm:max-w-md">
+                Module en cours
+              </div>
+            </div>
+          </div>
+          <span id="student-timer-display" class="font-mono text-xs font-bold text-keria-navy bg-slate-100 px-3 py-1 rounded-full border border-slate-200">10:00</span>
+        </div>
+
+        <!-- BLOC QUIZ INTERACTIF SMARTPHONE -->
+        <div id="student-quiz-block" class="keria-card rounded-2xl p-5 shadow-xs border border-slate-200">
+          <div class="flex items-center justify-between pb-3 mb-3 border-b border-slate-100">
+            <div>
+              <h3 class="text-xs font-bold uppercase tracking-wider text-keria-blue">Sondage Salle en Direct</h3>
+              <p class="text-[11px] text-keria-muted">Votre vote apparaît instantanément au vidéoprojecteur</p>
+            </div>
+            <span id="student-quiz-status" class="text-[10px] font-mono px-2.5 py-0.5 rounded-full bg-slate-100 text-keria-muted font-bold">À vous</span>
+          </div>
+
+          <h4 id="student-quiz-question" class="text-sm font-bold text-keria-navy mb-4 leading-snug">
+            Question en cours...
+          </h4>
+
+          <div id="student-quiz-options" class="space-y-2">
+            <!-- Rendu JS des options tactiles -->
+          </div>
+        </div>
+
+        <!-- BLOC MATIÈRE BRUTE EXERCICE -->
+        <div class="keria-card rounded-2xl p-5">
+          <div class="flex items-center justify-between pb-3 mb-3 border-b border-slate-100">
+            <h3 class="text-xs font-bold uppercase tracking-wider text-keria-navy">Document Brut pour l'Atelier</h3>
+            <button onclick="copyToClipboard(currentSlide().rawMaterial, this)" class="px-3 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-xs font-bold text-keria-navy flex items-center gap-1.5 transition border border-slate-200">
+              <svg class="w-3.5 h-3.5 text-keria-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
+              <span>Copier le texte</span>
             </button>
           </div>
-          <p class="text-xs text-slate-400">Copie ce cas réel en un clic et injecte-le dans ton outil d'IA pour réaliser l'exercice.</p>
-          <div id="student-raw-content" class="bg-slate-950 p-3 rounded-lg border border-slate-800 text-xs font-mono text-slate-300 whitespace-pre-line leading-relaxed max-h-48 overflow-y-auto">
-Bonjour, nous avons reçu la livraison de 400 cierges et 60 bougies votives ce matin. Le carton principal était déchiré et 2 cartons de cierges sont fendus. Merci de nous renvoyer ça rapidement ou on annule le prélèvement. Cordialement, Paroisse Saint-Pierre.
+          <pre id="student-raw-material" class="font-mono text-xs text-slate-700 bg-slate-50 p-4 rounded-xl border border-slate-200 whitespace-pre-wrap max-h-44 overflow-y-auto leading-relaxed">
+            Aucun document brut associé.
+          </pre>
+        </div>
+
+        <!-- BLOC CONSTRUCTEUR DE PROMPT RTCF -->
+        <div class="keria-card rounded-2xl p-5">
+          <div class="flex items-center justify-between pb-3 mb-4 border-b border-slate-100">
+            <div>
+              <h3 class="text-xs font-bold uppercase tracking-wider text-keria-navy">Constructeur de Consigne RTCF</h3>
+              <p class="text-[11px] text-keria-muted">Les 4 piliers indispensables pour piloter l'IA</p>
+            </div>
+            <button onclick="resetRtcfFields()" class="text-[11px] text-keria-muted hover:text-keria-navy font-medium underline transition">
+              Effacer
+            </button>
+          </div>
+
+          <!-- 4 Champs interactifs RTCF -->
+          <div class="space-y-3 mb-4 text-xs">
+            <div>
+              <label class="block font-bold text-keria-navy mb-1 text-[11px]">[R] Rôle & Posture</label>
+              <input type="text" id="rtcf-role" oninput="updateRtcfAssembly()" placeholder="Ex: Tu es Responsable SAV chevronné dans une menuiserie artisanale..." class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-keria-navy placeholder-slate-400 focus:outline-none focus:border-keria-blue focus:bg-white transition text-xs">
+            </div>
+
+            <div>
+              <label class="block font-bold text-keria-navy mb-1 text-[11px]">[T] Tâche Précise (Verbe d'action)</label>
+              <input type="text" id="rtcf-task" oninput="updateRtcfAssembly()" placeholder="Ex: Rédige un email d'apaisement factuel et courtois..." class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-keria-navy placeholder-slate-400 focus:outline-none focus:border-keria-blue focus:bg-white transition text-xs">
+            </div>
+
+            <div>
+              <label class="block font-bold text-keria-navy mb-1 text-[11px]">[C] Contexte Opérationnel</label>
+              <input type="text" id="rtcf-context" oninput="updateRtcfAssembly()" placeholder="Ex: Client fidèle depuis 7 ans, retard de 48h dû au transporteur..." class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-keria-navy placeholder-slate-400 focus:outline-none focus:border-keria-blue focus:bg-white transition text-xs">
+            </div>
+
+            <div>
+              <label class="block font-bold text-keria-navy mb-1 text-[11px]">[F] Format & Limites Strictes</label>
+              <input type="text" id="rtcf-format" oninput="updateRtcfAssembly()" placeholder="Ex: 3 paragraphes courts, sans reconnaissance de faute légale..." class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-keria-navy placeholder-slate-400 focus:outline-none focus:border-keria-blue focus:bg-white transition text-xs">
+            </div>
+          </div>
+
+          <!-- Assemblage en direct du prompt RTCF -->
+          <div class="bg-keria-blueSoft/30 rounded-xl p-4 border border-keria-blueBorder">
+            <div class="flex items-center justify-between pb-2 mb-2 border-b border-keria-blueBorder">
+              <span class="text-[10px] font-mono text-keria-blue uppercase tracking-wider font-bold">
+                Prompt assemblé en direct
+              </span>
+              <button onclick="copyToClipboard(document.getElementById('rtcf-assembly').innerText, this)" class="px-3 py-1 rounded-lg bg-keria-blue hover:bg-keria-blueHover text-xs font-bold text-white flex items-center gap-1.5 transition shadow-xs">
+                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"/></svg>
+                <span>Copier</span>
+              </button>
+            </div>
+            <div id="rtcf-assembly" class="font-mono text-xs text-keria-navy whitespace-pre-wrap leading-relaxed min-h-[80px] select-all bg-white p-3 rounded-lg border border-slate-200">
+              Rôle : ...&#10;Tâche : ...&#10;Contexte : ...&#10;Format & Contraintes : ...
+            </div>
           </div>
         </div>
 
-        <!-- Bloc 2 : Constructeur de prompt RTCF interactif -->
-        <div class="bg-slate-900 border border-slate-800 rounded-xl p-5 space-y-4">
-          <h3 class="text-sm font-bold text-slate-200 flex items-center gap-2">🛠️ Générateur de prompt guidé (RTCF)</h3>
-          
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
-            <div>
-              <label class="block font-semibold text-indigo-400 mb-1">R - Rôle</label>
-              <input type="text" id="rtcf-role" oninput="updateRTCFOutput()" placeholder="Ex: Responsable service client..." class="w-full bg-slate-950 border border-slate-800 rounded px-3 py-2 text-slate-200 focus:outline-none focus:border-indigo-500">
+        <!-- ACCORDÉON SOLUTION FORMATEUR -->
+        <div class="keria-card rounded-2xl overflow-hidden">
+          <button onclick="toggleAccordion('solution-body', this)" class="w-full p-4 flex items-center justify-between text-left hover:bg-slate-50 transition">
+            <span class="text-xs font-bold text-keria-navy">Corrigé & Formulation Modèle Formateur</span>
+            <div class="flex items-center gap-2">
+              <span class="text-xs text-keria-blue font-bold toggle-label">Afficher</span>
+              <svg class="w-4 h-4 text-keria-muted transform transition-transform duration-200 toggle-arrow" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
             </div>
-            <div>
-              <label class="block font-semibold text-indigo-400 mb-1">T - Tâche</label>
-              <input type="text" id="rtcf-task" oninput="updateRTCFOutput()" placeholder="Ex: Rédiger une réponse rassurante..." class="w-full bg-slate-950 border border-slate-800 rounded px-3 py-2 text-slate-200 focus:outline-none focus:border-indigo-500">
-            </div>
-            <div>
-              <label class="block font-semibold text-indigo-400 mb-1">C - Contexte</label>
-              <input type="text" id="rtcf-context" oninput="updateRTCFOutput()" placeholder="Ex: Livraison abîmée, client historique..." class="w-full bg-slate-950 border border-slate-800 rounded px-3 py-2 text-slate-200 focus:outline-none focus:border-indigo-500">
-            </div>
-            <div>
-              <label class="block font-semibold text-indigo-400 mb-1">F - Format & Contraintes</label>
-              <input type="text" id="rtcf-format" oninput="updateRTCFOutput()" placeholder="Ex: 3 paragraphes, sans jargon..." class="w-full bg-slate-950 border border-slate-800 rounded px-3 py-2 text-slate-200 focus:outline-none focus:border-indigo-500">
-            </div>
-          </div>
-
-          <div class="pt-2">
-            <div class="flex items-center justify-between mb-1.5">
-              <span class="text-xs font-bold text-slate-300">Prompt assemblé :</span>
-              <button onclick="copyGeneratedRTCF()" class="text-xs text-indigo-400 hover:text-indigo-300 font-medium">Copier mon prompt</button>
-            </div>
-            <div id="rtcf-result" class="bg-slate-950 border border-slate-800 rounded-lg p-3 text-xs font-mono text-slate-400 min-h-[4rem] whitespace-pre-wrap">Remplis les champs ci-dessus pour générer ton prompt automatiquement.</div>
-          </div>
-        </div>
-
-        <!-- Bloc 3 : Solution suggérée (masquée par défaut) -->
-        <div class="bg-slate-900 border border-slate-800 rounded-xl p-5">
-          <button onclick="toggleSolution()" class="w-full flex items-center justify-between text-left">
-            <span class="text-sm font-bold text-amber-400 flex items-center gap-2">💡 Solution & Prompt modèle suggéré</span>
-            <span id="solution-chevron" class="text-slate-400 text-xs">Afficher ▼</span>
           </button>
-          <div id="solution-box" class="hidden mt-4 pt-4 border-t border-slate-800 text-xs font-mono text-emerald-300 whitespace-pre-wrap leading-relaxed bg-slate-950 p-3 rounded-lg border border-emerald-950">
-Agis en responsable du service après-vente d'une entreprise artisanale réputée.
-Tâche : Rédige un e-mail de réponse à la Paroisse Saint-Pierre suite à leur réclamation sur un colis endommagé.
-Contexte : C'est un client fidèle depuis 10 ans. Les colis de remplacement partent dès demain matin sans frais.
-Contraintes : Ton courtois, empathique mais très professionnel. Propose une solution immédiate en 3 points clairs. Zéro formule passive.
+          
+          <div id="solution-body" class="hidden p-4 pt-0 border-t border-slate-100">
+            <div class="flex justify-end pt-3 pb-2">
+              <button onclick="copyToClipboard(currentSlide().solutionPrompt, this)" class="text-xs bg-slate-100 hover:bg-slate-200 text-keria-navy font-bold px-3 py-1 rounded-lg flex items-center gap-1 transition border border-slate-200">
+                Copier le corrigé
+              </button>
+            </div>
+            <pre id="student-solution-content" class="font-mono text-xs text-slate-700 bg-slate-50 p-4 rounded-xl border border-slate-200 whitespace-pre-wrap leading-relaxed">
+              Solution en cours...
+            </pre>
           </div>
         </div>
+
+        <!-- CHECK-LIST RGPD MINIMALISTE -->
+        <div class="keria-card rounded-2xl p-5 border-l-4 border-l-rose-500">
+          <h4 class="text-xs font-bold uppercase tracking-wider text-rose-600 mb-3">Les 4 Règles de Confidentialité PME</h4>
+          <div class="space-y-2 text-xs text-slate-600">
+            <div class="flex items-center gap-2.5 p-2.5 rounded-xl bg-slate-50 border border-slate-200">
+              <span class="w-2 h-2 rounded-full bg-rose-500 flex-none"></span>
+              <span>Aucun nom de famille, email direct ou numéro de téléphone personnel.</span>
+            </div>
+            <div class="flex items-center gap-2.5 p-2.5 rounded-xl bg-slate-50 border border-slate-200">
+              <span class="w-2 h-2 rounded-full bg-rose-500 flex-none"></span>
+              <span>Zéro IBAN, coordonnée bancaire ou mot de passe dans les invites.</span>
+            </div>
+            <div class="flex items-center gap-2.5 p-2.5 rounded-xl bg-slate-50 border border-slate-200">
+              <span class="w-2 h-2 rounded-full bg-rose-500 flex-none"></span>
+              <span>Anonymiser les marges réelles et les formules propriétaires.</span>
+            </div>
+            <div class="flex items-center gap-2.5 p-2.5 rounded-xl bg-slate-50 border border-slate-200">
+              <span class="w-2 h-2 rounded-full bg-rose-500 flex-none"></span>
+              <span>Relecture et validation humaine systématique avant envoi.</span>
+            </div>
+          </div>
+        </div>
+
       </div>
     </section>
 
   </main>
 
-  <!-- ========================================== -->
-  <!-- MOTEUR JS & DONNÉES DE FORMATION           -->
-  <!-- ========================================== -->
+  <!-- ================= MODALE QR CODE AGRANDI ================= -->
+  <div id="qr-modal" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-md flex items-center justify-center p-4 hidden">
+    <div class="bg-white border border-slate-200 rounded-3xl max-w-sm w-full p-6 text-center shadow-2xl relative">
+      <button onclick="toggleQrModal(false)" class="absolute top-4 right-4 p-1.5 rounded-full text-keria-muted hover:text-keria-navy bg-slate-100 transition">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+      </button>
+
+      <span class="text-[10px] font-bold uppercase tracking-wider text-keria-blue bg-keria-blueSoft px-3 py-1 rounded-full border border-keria-blueBorder inline-block mb-2">Connexion Smartphone</span>
+      <h3 class="text-xl font-black text-keria-navy mb-4">Rejoindre la Session</h3>
+
+      <!-- QR Code épuré -->
+      <div class="bg-white p-4 rounded-2xl inline-block shadow-md mx-auto border-2 border-slate-100">
+        <div id="modal-qr-container" class="flex items-center justify-center"></div>
+      </div>
+
+      <div class="mt-5 pt-4 border-t border-slate-100 flex items-center justify-between text-left">
+        <span id="modal-qr-url" class="text-xs font-mono text-keria-muted truncate max-w-[200px] block">https://...</span>
+        <button onclick="copyToClipboard(getStudentUrl(), this)" class="px-3 py-1.5 rounded-lg bg-keria-navy hover:bg-keria-navyLight text-xs font-bold text-white transition shadow-xs">
+          Copier
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= MODALE HUB MULTI-ÉCRANS ================= -->
+  <div id="multiscreen-modal" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-md flex items-center justify-center p-4 hidden">
+    <div class="bg-white border border-slate-200 rounded-3xl max-w-xl w-full p-6 sm:p-7 shadow-2xl relative">
+      <button onclick="openMultiScreenModal(false)" class="absolute top-4 right-4 p-1.5 rounded-full text-keria-muted hover:text-keria-navy bg-slate-100 transition">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+      </button>
+
+      <h3 class="text-lg font-black text-keria-navy mb-1">Configuration des 3 Écrans KeriA</h3>
+      <p class="text-xs text-keria-muted mb-5">Chaque écran est indépendant tout en restant synchronisé instantanément sans serveur.</p>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-3 mb-5">
+        <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200 flex flex-col justify-between">
+          <div>
+            <span class="text-[10px] uppercase font-bold text-keria-blue block mb-1">Écran 1</span>
+            <h4 class="font-bold text-keria-navy text-sm mb-1">Vidéoprojecteur</h4>
+            <p class="text-[11px] text-keria-muted mb-3">Affichage grand écran pour la salle.</p>
+          </div>
+          <button onclick="launchProjectorWindow()" class="w-full py-2 rounded-lg bg-keria-navy hover:bg-keria-navyLight text-white text-xs font-bold transition shadow-xs">
+            Ouvrir
+          </button>
+        </div>
+
+        <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200 flex flex-col justify-between">
+          <div>
+            <span class="text-[10px] uppercase font-bold text-keria-blue block mb-1">Écran 2</span>
+            <h4 class="font-bold text-keria-navy text-sm mb-1">Régie Formateur</h4>
+            <p class="text-[11px] text-keria-muted mb-3">Pilotage de session, téléprompteur & chrono.</p>
+          </div>
+          <button onclick="launchCockpitWindow()" class="w-full py-2 rounded-lg bg-slate-200 hover:bg-slate-300 text-keria-navy text-xs font-bold transition">
+            Ouvrir
+          </button>
+        </div>
+
+        <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200 flex flex-col justify-between">
+          <div>
+            <span class="text-[10px] uppercase font-bold text-keria-blue block mb-1">Écran 3</span>
+            <h4 class="font-bold text-keria-navy text-sm mb-1">Smartphones</h4>
+            <p class="text-[11px] text-keria-muted mb-3">App apprenants avec vote en direct.</p>
+          </div>
+          <button onclick="toggleQrModal(true); openMultiScreenModal(false);" class="w-full py-2 rounded-lg bg-keria-blue hover:bg-keria-blueHover text-white text-xs font-bold transition shadow-xs">
+            QR Code
+          </button>
+        </div>
+      </div>
+
+      <div class="text-right">
+        <button onclick="openMultiScreenModal(false)" class="text-xs font-semibold text-keria-muted hover:text-keria-navy transition">Fermer</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= NOTIFICATION TOAST ================= -->
+  <div id="toast" class="fixed bottom-6 right-6 z-50 transform translate-y-16 opacity-0 transition-all duration-300 bg-keria-navy text-white px-4 py-2.5 rounded-xl text-xs font-bold flex items-center gap-2 border border-keria-navyLight shadow-2xl">
+    <svg class="w-4 h-4 text-keria-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+    <span id="toast-message">Copié</span>
+  </div>
+
+  <!-- ================= LOGIQUE JAVASCRIPT ES6 ================= -->
   <script>
-    // 1. DÉFINITION DU CONTENU PÉDAGOGIQUE (4 HEURES)
+    /**
+     * DONNÉES PÉDAGOGIQUES INTÉGRALES (10 ÉTAPES COMPLÈTES AVEC DESIGN CLAIR)
+     */
     const slidesData = [
       {
         id: 0,
+        moduleCode: "M0",
         badge: "00:00 - 00:15 | Module 0",
-        title: "L'Électrochoc",
-        subtitle: "Passer du gadget au réflexe métier qui libère 20 % de votre semaine.",
-        notes: "Lancer la session sans tourner autour du pot. Exécuter un prompt médiocre en direct devant la salle pour montrer pourquoi 90 % des gens sont déçus par l'IA.",
-        demoPrompt: "Écris une réponse à ce client mécontent.",
+        title: "L'Électrochoc : Du Gadget à l'Outil Rentable",
+        subtitle: "Pourquoi 80 % des débutants abandonnent après un prompt décevant",
+        timeSlot: "00:00 - 00:15",
+        notes: "ACCUEIL & AMORCE :\n- Ne pas commencer par de la théorie technique.\n- Faire immédiatement le test du prompt 'naïf' au tableau.\n- Montrer que l'IA donne un texte lisse, impersonnel et totalement inapplicable pour une PME sans méthode.\n- Poser la promesse de la session : 45 min de temps net regagné par jour dès demain matin.",
+        demoPrompt: "Écris-moi une réponse pour un client pas content qui a reçu sa commande en retard.",
+        rawMaterial: "Email reçu à 08h14 :\n'Bonjour, voilà 12 jours que j'attends la commande #45982 pour notre chantier d'Aubervilliers. Vos transporteurs sont injoignables. Si ce n'est pas là demain 10h, j'annule le bon de commande et préviens notre service juridique. Cordialement, M. Martin.'",
+        solutionPrompt: "Rôle : Tu es Directeur de la Relation Client d'un négoce de matériaux pour le bâtiment.\nTâche : Rédige une réponse d'apaisement par email au client M. Martin.\nContexte : Commande #45982 retardée de 48h suite à un problème logistique chez le transporteur externe. Le colis est localisé sur la plateforme de distribution locale.\nFormat & Contraintes : 3 paragraphes concis. Ton professionnel et chaleureux. Ne fais pas de promesse d'heure ferme impossible à tenir, mais annonce la prise en charge personnalisée avec suivi d'ici 11h.",
+        quiz: {
+          question: "Face à un prompt naïf ('Écris un mail client'), quel est le résultat habituel ?",
+          options: [
+            "Un texte générique et mielleux qu'il faut réécrire à 90 %",
+            "Un document juridique immédiatement prêt à signer",
+            "Une réponse personnalisée respectant vos marges"
+          ],
+          correct: 0
+        },
         screenHTML: `
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-2xl w-full text-left">
-            <div class="p-4 rounded-xl bg-rose-950/30 border border-rose-900/50">
-              <span class="text-xs font-bold text-rose-400 uppercase">Ce que font 90% des gens</span>
-              <p class="text-sm text-slate-300 mt-2">« Fais-moi un résumé » ou « Écris un mail » $\\rightarrow$ Résultat plat, générique, inexploitable.</p>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6 my-auto">
+            <div class="keria-card p-8 rounded-3xl border-l-4 border-l-rose-500">
+              <span class="text-[10px] font-bold uppercase tracking-wider text-rose-600 block mb-2">Approche Naïve</span>
+              <h3 class="text-xl font-black text-keria-navy mb-2">Le Piège du Texte Creux</h3>
+              <p class="text-xs font-mono text-slate-700 bg-slate-50 p-3.5 rounded-xl border border-slate-200 mb-4">
+                "Écris-moi un mail pour un client en colère."
+              </p>
+              <ul class="text-xs text-slate-600 space-y-2 font-medium">
+                <li class="flex items-center gap-2"><span class="text-rose-500 font-bold">✕</span> Ton plat et sans nuance opérationnelle</li>
+                <li class="flex items-center gap-2"><span class="text-rose-500 font-bold">✕</span> Aucun fait réel ou contrainte métier pris en compte</li>
+                <li class="flex items-center gap-2"><span class="text-rose-500 font-bold">✕</span> Obligation de tout réécrire à la main</li>
+              </ul>
             </div>
-            <div class="p-4 rounded-xl bg-emerald-950/30 border border-emerald-900/50">
-              <span class="text-xs font-bold text-emerald-400 uppercase">L'objectif aujourd'hui</span>
-              <p class="text-sm text-slate-300 mt-2">Méthode rigoureuse + cas réels d'entreprise $\\rightarrow$ 45 min gagnées chaque jour.</p>
+
+            <div class="keria-card p-8 rounded-3xl border-l-4 border-l-keria-blue border-keria-blueBorder/60 bg-gradient-to-br from-white to-keria-blueSoft/30">
+              <span class="text-[10px] font-bold uppercase tracking-wider text-keria-blue block mb-2">Méthode KeriA</span>
+              <h3 class="text-xl font-black text-keria-navy mb-2">La Consigne Structurée RTCF</h3>
+              <p class="text-xs font-mono text-keria-navy font-bold bg-white p-3.5 rounded-xl border border-keria-blueBorder mb-4 shadow-2xs">
+                [Rôle] + [Tâche] + [Contexte] + [Format/Limites]
+              </p>
+              <ul class="text-xs text-slate-700 space-y-2 font-medium">
+                <li class="flex items-center gap-2"><span class="text-keria-blue font-bold">✓</span> Réponse chirurgicale adaptée à votre entreprise</li>
+                <li class="flex items-center gap-2"><span class="text-keria-blue font-bold">✓</span> Prêt à l'envoi en moins de 30 secondes</li>
+                <li class="flex items-center gap-2"><span class="text-keria-blue font-bold">✓</span> 45 minutes de travail économisées par jour</li>
+              </ul>
             </div>
           </div>
-        `,
-        rawMaterial: "Exemple de mail client reçu : 'Bonjour, nous n'avons rien reçu à ce jour, merci de faire le nécessaire.'"
+        `
       },
       {
         id: 1,
-        badge: "00:15 - 00:50 | Module 1",
-        title: "Comprendre la machine & Sécurité RGPD",
-        subtitle: "Un LLM prédit des probabilités de mots. Il ne 'réfléchit' pas. Ne jamais injecter de données secrètes.",
-        notes: "Insister sur les hallucinations et la règle d'or : ce qui rentre dans un modèle public peut servir à l'entraînement sauf configuration explicite.",
-        demoPrompt: "Quelles sont les 3 règles de sécurité RGPD indispensables en TPE/PME ?",
+        moduleCode: "M1",
+        badge: "00:15 - 00:35 | Module 1",
+        title: "Démystifier la Machine : Prédiction & Hallucinations",
+        subtitle: "Comprendre le moteur statistique pour ne plus jamais se faire piéger",
+        timeSlot: "00:15 - 00:35",
+        notes: "OBJECTIFS DU FORMATEUR :\n- Casser le mythe de 'l'esprit pensant'.\n- Expliquer visuellement le token : l'IA prédit le fragment de mot suivant le plus plausible statistiquement.\n- Conséquence vitale : Si vous lui demandez d'inventer une jurisprudence ou de calculer sans vérification, elle produira une certitude erronée (hallucination).\n- Règle d'or : L'IA propose, l'humain valide et engage sa responsabilité.",
+        demoPrompt: "Donne-moi l'article précis du Code du Travail français qui interdit l'utilisation d'une machine à café à capsules en entreprise.",
+        rawMaterial: "Note interne du service logistique (brouillon) :\n'Suite au contrôle de sécurité du 14 mars, la direction souhaite rappeler les règles concernant les multiprises dans les ateliers et les radiateurs soufflants individuels. Il faut clarifier qui est responsable des coupures.'",
+        solutionPrompt: "Rôle : Tu es Responsable Qualité et Sécurité en environnement industriel de PME.\nTâche : Rédige une note de service synthétique et bienveillante basée sur les faits suivants.\nContexte : Des coupures intempestives se produisent à cause de convecteurs d'appoint non homologués branchés sur les lignes d'usinage.\nFormat : Format mémo avec 3 consignes numérotées, ton pragmatique, sans jargon légal excessif.",
+        quiz: {
+          question: "Quand une IA manque de faits dans sa consigne, quel est son réflexe mécanique ?",
+          options: [
+            "Elle s'arrête et demande poliment des éclaircissements",
+            "Elle comble le vide statistique en inventant des références (hallucination)",
+            "Elle consulte automatiquement le site officiel du gouvernement"
+          ],
+          correct: 1
+        },
         screenHTML: `
-          <div class="grid grid-cols-3 gap-4 max-w-3xl w-full text-left text-xs">
-            <div class="p-4 rounded-lg bg-slate-900 border border-slate-800">
-              <span class="font-bold text-amber-400 block mb-1">⚠️ Hallucinations</span>
-              L'IA privilégie la fluidité et la certitude sur la vérité factuelle.
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-6 my-auto">
+            <div class="keria-card p-6 rounded-3xl">
+              <span class="text-xs font-mono font-bold text-keria-blue block mb-3">01</span>
+              <h4 class="text-sm font-bold text-keria-navy mb-2">Calcul Probabiliste</h4>
+              <p class="text-xs text-slate-600 leading-relaxed">
+                Le modèle ne réfléchit pas au sens humain. Il prédit la séquence de mots la plus plausible en fonction de milliards d'exemples analysés.
+              </p>
             </div>
-            <div class="p-4 rounded-lg bg-slate-900 border border-slate-800">
-              <span class="font-bold text-rose-400 block mb-1">🛑 Zéro Secret</span>
-              Pas de fichiers clients nominatifs, RIB ou secrets d'affaires.
+            <div class="keria-card p-6 rounded-3xl border-t-4 border-t-amber-500">
+              <span class="text-xs font-mono font-bold text-amber-600 block mb-3">02</span>
+              <h4 class="text-sm font-bold text-keria-navy mb-2">L'Hallucination</h4>
+              <p class="text-xs text-slate-600 leading-relaxed">
+                En l'absence de données factuelles fournies, l'IA ne signale pas son ignorance : elle invente une réponse avec une parfaite assurance.
+              </p>
             </div>
-            <div class="p-4 rounded-lg bg-slate-900 border border-slate-800">
-              <span class="font-bold text-emerald-400 block mb-1">✅ Anonymisation</span>
-              Remplacer les vrais noms par [Client A] et [Montant B].
+            <div class="keria-card p-6 rounded-3xl border-t-4 border-t-keria-navy">
+              <span class="text-xs font-mono font-bold text-keria-navy block mb-3">03</span>
+              <h4 class="text-sm font-bold text-keria-navy mb-2">Contrôle Humain</h4>
+              <p class="text-xs text-slate-600 leading-relaxed">
+                L'IA est un rédacteur de premier jet. Vous êtes l'expert métier qui fournit la matière première et qui engage sa responsabilité.
+              </p>
             </div>
           </div>
-        `,
-        rawMaterial: "Fichier type à anonymiser : Dupont SARL - SIRET 452899100021 - Facture impayée 12 450 € TTC."
+        `
       },
       {
         id: 2,
-        badge: "00:50 - 01:50 | Module 2",
-        title: "L'art de la consigne (Méthode RTCF)",
-        subtitle: "Rôle • Tâche • Contexte • Format & Contraintes.",
-        notes: "Faire ouvrir le module RTCF sur les ordinateurs des participants. Donner 15 min de sprint sur le cas de la réclamation client.",
-        demoPrompt: "Rôle: Directeur financier. Tâche: Analyser ce tableau. Contexte: Clôture annuelle. Format: 3 points clés sans jargon.",
+        moduleCode: "M1",
+        badge: "00:35 - 00:50 | Module 1",
+        title: "Confidentialité & RGPD : Le Bouclier PME",
+        subtitle: "Ce qui ne doit jamais franchir la frontière d'un modèle public",
+        timeSlot: "00:35 - 00:50",
+        notes: "SÉCURITÉ STRICTE :\n- Évoquer les cas concrets de fuites (brevets et codes sources découverts dans les historiques).\n- Les 4 interdits absolus : Données de santé, RIB/CB, mots de passe, fichiers clients nominatifs avec emails.\n- Exercice d'anonymisation express : remplacer les identités par des variables génériques ([CLIENT_A], [FOURNISSEUR_X]).",
+        demoPrompt: "Voici notre liste de relance : M. Dupont (06 12 34 56 78, solde 1450€), Mme Leroy (07 98 76 54 32, solde 320€). Écris les relances.",
+        rawMaterial: "FICHIER CONFIDENTIEL INTERNE NON ANONYMISÉ :\nClient : SAS BATIMEX - Contact : Jean-Marc DUPONT (jean-marc.dupont@batimex-btp.fr / Port: 06.88.99.11.22)\nDevis #DV-2025-089\nRemise négociée exceptionnelle sous le manteau : 28% sur marge brute.\nRIB Société : FR76 3000 2005 6700 0123 4567 890",
+        solutionPrompt: "Rôle : Tu es Assistant de Gestion Commerciale.\nTâche : Rédige une relance de devis courtoise sans mentionner les données bancaires.\nContexte : Client professionnel historique [ENTREPRISE_A], devis en attente de signature depuis 10 jours.\nFormat : Email court de 4 lignes, rappelant la date limite de validité des tarifs.",
+        quiz: {
+          question: "Parmi ces éléments, lequel peut être collé SANS anonymisation dans un modèle public ?",
+          options: [
+            "L'extrait d'un devis contenant l'IBAN et le nom du client",
+            "Un texte réglementaire public ou un article de loi",
+            "Un compte-rendu d'entretien individuel avec des appréciations RH"
+          ],
+          correct: 1
+        },
         screenHTML: `
-          <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 max-w-3xl w-full text-left text-xs">
-            <div class="p-3 bg-slate-900 border border-indigo-500/40 rounded-lg"><span class="font-black text-indigo-400 block text-base">R</span><span class="font-bold">Rôle</span><p class="text-slate-400 mt-1">L'expert incarné</p></div>
-            <div class="p-3 bg-slate-900 border border-indigo-500/40 rounded-lg"><span class="font-black text-indigo-400 block text-base">T</span><span class="font-bold">Tâche</span><p class="text-slate-400 mt-1">L'action exacte</p></div>
-            <div class="p-3 bg-slate-900 border border-indigo-500/40 rounded-lg"><span class="font-black text-indigo-400 block text-base">C</span><span class="font-bold">Contexte</span><p class="text-slate-400 mt-1">Matière & enjeux</p></div>
-            <div class="p-3 bg-slate-900 border border-indigo-500/40 rounded-lg"><span class="font-black text-indigo-400 block text-base">F</span><span class="font-bold">Format</span><p class="text-slate-400 mt-1">Style & contraintes</p></div>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6 my-auto">
+            <div class="keria-card p-7 rounded-3xl">
+              <span class="text-[10px] font-bold uppercase tracking-wider text-rose-600 block mb-3">Les 4 Interdits Majeurs</span>
+              <ul class="space-y-2.5 text-xs text-slate-600">
+                <li class="p-3 rounded-xl bg-slate-50 border border-slate-200">
+                  <strong class="text-keria-navy block mb-0.5">1. Données nominatives</strong>
+                  Noms réels, adresses email personnelles, téléphones directs.
+                </li>
+                <li class="p-3 rounded-xl bg-slate-50 border border-slate-200">
+                  <strong class="text-keria-navy block mb-0.5">2. Identifiants bancaires</strong>
+                  RIB, IBAN, cartes bancaires ou accès sécurisés.
+                </li>
+                <li class="p-3 rounded-xl bg-slate-50 border border-slate-200">
+                  <strong class="text-keria-navy block mb-0.5">3. Données stratégiques</strong>
+                  Marges réelles, formules secrètes, tarifs négociés confidentiels.
+                </li>
+              </ul>
+            </div>
+
+            <div class="keria-card p-7 rounded-3xl flex flex-col justify-between border-keria-blueBorder">
+              <div>
+                <span class="text-[10px] font-bold uppercase tracking-wider text-keria-blue block mb-2">Technique de Masquage</span>
+                <h4 class="text-sm font-bold text-keria-navy mb-2">Le Remplacement par Variables</h4>
+                <p class="text-xs text-slate-600 leading-relaxed mb-4">
+                  Remplacez simplement les entités sensibles par des balises génériques. L'IA analyse parfaitement la situation sans jamais mémoriser vos secrets.
+                </p>
+                <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 text-xs font-mono space-y-2">
+                  <div class="text-rose-600 line-through">Jean-Marc Dupont (SAS Batimex)</div>
+                  <div class="text-keria-navy font-bold">→ [CLIENT_A] (PME BTP régionale)</div>
+                </div>
+              </div>
+            </div>
           </div>
-        `,
-        rawMaterial: "Bonjour, nous avons reçu la livraison de 400 cierges et 60 bougies votives ce matin. Le carton principal était déchiré et 2 cartons de cierges sont fendus. Merci de nous renvoyer ça rapidement ou on annule le prélèvement. Cordialement, Paroisse Saint-Pierre."
+        `
       },
       {
         id: 3,
-        badge: "02:05 - 03:00 | Module 3",
-        title: "Super-pouvoirs du quotidien en PME",
-        subtitle: "Tableurs, extraction de données brutes et synthèses d'appels d'offres.",
-        notes: "Atelier 2 : Traitement d'un document brut dense. Montrer la bascule Microsoft Copilot vs Google Workspace selon le choix de la salle.",
-        demoPrompt: "Extrais sous forme de tableau CSV à 3 colonnes (Date, Fournisseur, Montant HT) le texte suivant...",
+        moduleCode: "M2",
+        badge: "00:50 - 01:20 | Module 2",
+        title: "L'Art de la Consigne : La Méthode RTCF",
+        subtitle: "Rôle, Tâche, Contexte, Format : Les 4 piliers d'une exécution chirurgicale",
+        timeSlot: "00:50 - 01:20",
+        notes: "MÉTHODOLOGIE CENTRALE :\n- C'est le cœur technique de la demi-journée.\n- Décortiquer chaque lettre : R (Rôle), T (Tâche), C (Contexte), F (Format).\n- Faire répéter les stagiaires : 'Si j'oublie le Format, j'ai 4 pages à relire. Si j'oublie le Contexte, c'est hors sujet.'",
+        demoPrompt: "Tu es Directeur Commercial B2B. Rédige un argumentaire en 3 points pour convaincre un artisan électricien de passer à la facture dématérialisée.",
+        rawMaterial: "Situation de l'entreprise :\nNous sommes un distributeur régional de pièces détachées (45 salariés, 12 M€ CA). 30% des clients artisans paient encore par chèque déposé en magasin le samedi matin. Cela encombre l'accueil et crée des retards de trésorerie de 18 jours en moyenne.",
+        solutionPrompt: "Rôle : Tu es Responsable de la Trésorerie et de la Relation Client d'un distributeur B2B.\nTâche : Propose un argumentaire d'aide à la vente pour nos comptoirs, incitant les artisans au prélèvement ou virement automatique.\nContexte : Les artisans sont attachés au contact humain mais manquent de temps administratif le week-end.\nFormat : 3 arguments clés sous forme de bénéfices concrets (gain de temps, zéro relance, suivi mobile). Ton bienveillant et complice.",
+        quiz: {
+          question: "Dans la méthode RTCF, quel pilier évite de recevoir un texte de 4 pages inutiles ?",
+          options: [
+            "Le pilier [R] Rôle",
+            "Le pilier [T] Tâche",
+            "Le pilier [F] Format & Contraintes"
+          ],
+          correct: 2
+        },
         screenHTML: `
-          <div class="max-w-2xl w-full text-left bg-slate-900 border border-slate-800 p-4 rounded-xl text-xs space-y-2">
-            <span class="font-bold text-indigo-400 uppercase">Cas Pratique PME</span>
-            <p class="text-slate-300">Nettoyage d'un relevé d'opérations bancaires non trié et génération instantanée d'un tableau récapitulatif par catégorie de dépense.</p>
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 my-auto">
+            <div class="keria-card p-6 rounded-3xl border-t-4 border-t-keria-navy">
+              <span class="text-3xl font-black text-keria-navy mb-2 block font-mono">R</span>
+              <h4 class="text-sm font-bold text-keria-navy mb-1">Rôle</h4>
+              <p class="text-xs text-slate-600 leading-relaxed">Expertise, posture et séniorité attribuées au modèle.</p>
+            </div>
+
+            <div class="keria-card p-6 rounded-3xl border-t-4 border-t-keria-blue">
+              <span class="text-3xl font-black text-keria-blue mb-2 block font-mono">T</span>
+              <h4 class="text-sm font-bold text-keria-navy mb-1">Tâche</h4>
+              <p class="text-xs text-slate-600 leading-relaxed">Verbe d'action univoque et livrable précis attendu.</p>
+            </div>
+
+            <div class="keria-card p-6 rounded-3xl border-t-4 border-t-slate-400">
+              <span class="text-3xl font-black text-slate-500 mb-2 block font-mono">C</span>
+              <h4 class="text-sm font-bold text-keria-navy mb-1">Contexte</h4>
+              <p class="text-xs text-slate-600 leading-relaxed">Enjeux réels, historique et profil du destinataire.</p>
+            </div>
+
+            <div class="keria-card p-6 rounded-3xl border-t-4 border-t-keria-blue">
+              <span class="text-3xl font-black text-keria-blue mb-2 block font-mono">F</span>
+              <h4 class="text-sm font-bold text-keria-navy mb-1">Format</h4>
+              <p class="text-xs text-slate-600 leading-relaxed">Structure exacte, longueur, ton et limites strictes.</p>
+            </div>
           </div>
-        `,
-        rawMaterial: "01/09 CARREFOUR LE PUY 45.20 EUR | 02/09 TOTAL ENERGIES RELAIS 78.00 EUR | 02/09 FACTURE EDF ENTREPRISE 340.50 EUR | 03/09 VIR RECU CLIENT ST ETIENNE 1200.00 EUR"
+        `
       },
       {
         id: 4,
-        badge: "03:00 - 03:45 | Module 4",
-        title: "Créer son assistant métier dédié",
-        subtitle: "Personnaliser les instructions permanentes pour ne plus jamais répéter son contexte.",
-        notes: "Chaque stagiaire configure ses Custom Instructions adaptées à son métier (ADV, Vente, Direction, Comptabilité).",
-        demoPrompt: "Tu es mon assistant de gestion. Tu connais mes gammes de produits et nos conditions générales de vente...",
+        moduleCode: "M2",
+        badge: "01:20 - 01:50 | Module 2",
+        title: "Atelier Pratique n°1 : Litige Client Tendu",
+        subtitle: "Mise en pratique directe : répondre sans compromettre la relation ni la marge",
+        timeSlot: "01:20 - 01:50",
+        notes: "LANCEMENT DE L'ATELIER (15 min chrono) :\n- Faire basculer les stagiaires sur leur 'Espace Stagiaire'.\n- Ils copient la matière brute et construisent leur prompt RTCF.\n- Lancer le chrono de 15 minutes.\n- Passer entre les rangs pour corriger les consignes trop vagues.",
+        demoPrompt: "Applique la méthode RTCF pour répondre au client M. Vasseur qui exige un remboursement immédiat de 4 500 € pour des menuiseries soi-disant rayées.",
+        rawMaterial: "RÉCLAMATION CLIENT (Mail reçu ce matin) :\nDe: f.vasseur@atelier-vasseur.fr\nObjet: SCANDALEUX - Commande #99482 inexploitable !!\nTexte: Bonjour. Les 8 baies vitrées reçues hier sont immondes : profilés aluminium éraflés, emballage déchiré par vos livreurs incompétents. J'ai un client qui emménage vendredi. J'exige le remboursement total immédiat de la commande (soit 4 250 € HT) plus 1000 € de dédommagement, ou je bloque tous les paiements et je publie les photos sur LinkedIn dès ce soir. M. Vasseur.",
+        solutionPrompt: "Rôle : Tu es Directeur du Service Client et de la Médiation dans une entreprise de négoce industriel.\nTâche : Rédige un email de réponse formel mais apaisant à M. Vasseur.\nContexte : Client professionnel régulier. Les photos du transporteur au départ de notre quai montrent un emballage intact. Il faut proposer l'envoi d'un technicien sous 24h ou le remplacement express des seuls profilés concernés, tout en refusant fermement l'indemnisation arbitraire sans expertise conjointe.\nFormat : 3 sections claires : 1. Empathie et prise en charge immédiate 2. Solution opérationnelle sous 24h 3. Modalités d'expertise contradictoire. Ton ferme, poli, mesuré.",
+        quiz: {
+          question: "Face à une réclamation tendue, quel piège la consigne RTCF doit-elle formellement interdire ?",
+          options: [
+            "Accuser réception du message sous 24 heures",
+            "Admettre par écrit une faute juridique avant l'expertise contradictoire",
+            "Proposer le passage d'un technicien qualifié sur place"
+          ],
+          correct: 1
+        },
         screenHTML: `
-          <div class="text-slate-300 text-sm max-w-xl">
-            <p class="mb-3">Ne réexpliquez plus jamais qui vous êtes. Vos instructions permanentes mémorisent vos préférences, contraintes de style et critères métiers.</p>
+          <div class="max-w-2xl mx-auto w-full my-auto text-center space-y-6">
+            <span class="text-xs font-bold uppercase tracking-wider text-keria-blue bg-keria-blueSoft px-3 py-1 rounded-full border border-keria-blueBorder font-mono">Atelier Guidé</span>
+            <h3 class="text-3xl font-black text-keria-navy">Résolution d'un Litige Commercial</h3>
+            <p class="text-xs sm:text-sm text-slate-600 leading-relaxed">
+              Ouvrez votre interface stagiaire sur mobile ou PC. Utilisez la matière brute fournie et appliquez la structure RTCF pour générer une réponse professionnelle.
+            </p>
+            <div class="grid grid-cols-3 gap-3 pt-2 text-left">
+              <div class="p-4 rounded-2xl keria-card border-t-2 border-t-keria-blue">
+                <span class="text-[10px] text-keria-muted font-bold block mb-1">01</span>
+                <span class="text-xs font-bold text-keria-navy">Copier la matière</span>
+              </div>
+              <div class="p-4 rounded-2xl keria-card border-t-2 border-t-keria-blue">
+                <span class="text-[10px] text-keria-muted font-bold block mb-1">02</span>
+                <span class="text-xs font-bold text-keria-navy">Remplir le RTCF</span>
+              </div>
+              <div class="p-4 rounded-2xl keria-card border-t-2 border-t-keria-blue">
+                <span class="text-[10px] text-keria-muted font-bold block mb-1">03</span>
+                <span class="text-xs font-bold text-keria-navy">Comparer au corrigé</span>
+              </div>
+            </div>
           </div>
-        `,
-        rawMaterial: "Paramètres > Instructions personnalisées : Rédiger son persona professionnel."
+        `
       },
       {
         id: 5,
-        badge: "03:45 - 04:00 | Module 5",
-        title: "Plan d'action & Débrief",
-        subtitle: "Une tâche concrète automatisée dès demain matin au bureau.",
-        notes: "Tour de table rapide : chaque participant s'engage sur UNE tâche récurrente à traiter avec son assistant dès demain.",
-        demoPrompt: "Fais-moi la synthèse de mes actions prioritaires pour la semaine.",
+        moduleCode: "PAUSE",
+        badge: "01:50 - 02:05 | Pause Active",
+        title: "Pause Café & Réflexion",
+        subtitle: "15 minutes de respiration — Énigme logique",
+        timeSlot: "01:50 - 02:05",
+        notes: "GESTION DE LA PAUSE :\n- Lancer le chrono de pause 15:00.\n- Laisser l'énigme affichée pour susciter des échanges informels près de la machine à café.\n- Répondre aux questions individuelles des participants timides.",
+        demoPrompt: "Si je mets 3 chemises à sécher au soleil et qu'elles mettent 3 heures, combien de temps mettront 6 chemises ?",
+        rawMaterial: "Énigme de la pause :\n'Un fermier a 17 moutons. Tous meurent sauf 9. Combien lui en reste-t-il ?'\nTestez cette phrase sur vos téléphones avec un prompt naïf et observez si le modèle calcule bêtement ou comprend le français !",
+        solutionPrompt: "Rôle : Observateur logique.\nTâche : Réponds à l'énigme sans tomber dans le piège arithmétique.\nRéponse attendue : Il lui reste exactement 9 moutons (ceux qui n'ont pas péri).",
+        quiz: {
+          question: "Énigme : Un fermier a 17 moutons. Tous meurent sauf 9. Combien lui en reste-t-il ?",
+          options: [
+            "8 moutons (17 - 9)",
+            "9 moutons (ceux qui n'ont pas péri)",
+            "0 mouton"
+          ],
+          correct: 1
+        },
         screenHTML: `
-          <div class="text-center">
-            <span class="text-emerald-400 font-bold text-xl block mb-2">Formation clôturée avec succès</span>
-            <p class="text-slate-400 text-xs">Téléchargez votre mémo de prompts et appliquez la méthode dès demain.</p>
+          <div class="text-center my-auto max-w-xl mx-auto space-y-5">
+            <span class="text-xs font-bold uppercase tracking-wider text-keria-blue bg-keria-blueSoft px-3 py-1 rounded-full border border-keria-blueBorder font-mono">Pause Active</span>
+            <h2 class="text-3xl sm:text-4xl font-black text-keria-navy">15 Minutes de Respiration</h2>
+            <div class="keria-card p-6 rounded-3xl text-sm font-mono text-keria-navy text-left leading-relaxed shadow-xs border-slate-200">
+              "Un fermier a 17 moutons. Tous meurent sauf 9. Combien lui en reste-t-il ?"
+            </div>
+            <p class="text-xs text-keria-muted">Votez depuis votre smartphone pour voir le résultat de la salle en direct.</p>
           </div>
-        `,
-        rawMaterial: "Fiche mémo KerIA : Méthode RTCF, règles de sécurité RGPD et les 10 prompts indispensables en PME."
+        `
+      },
+      {
+        id: 6,
+        moduleCode: "M3",
+        badge: "02:05 - 02:35 | Module 3",
+        title: "Super-Pouvoirs Métier : Données & Tableurs",
+        subtitle: "Nettoyage et structuration de flux bruts sans formules complexes",
+        timeSlot: "02:05 - 02:35",
+        notes: "DÉMONSTRATION CHOC :\n- Prendre un extrait de relevé bancaire ou un copier-coller de devis illisible.\n- Montrer comment un prompt de structuration génère instantanément un tableau propre prêt pour Excel ou Google Sheets.\n- Souligner le gain : 2 heures de retraitement manuel transformées en 15 secondes.",
+        demoPrompt: "Extrais les données suivantes dans un tableau propre avec colonnes : Date, Fournisseur, Catégorie, Montant HT, Montant TTC.",
+        rawMaterial: "FLUX BRUT BANCAIRE NON STRUCTURÉ :\n2025-02-01 CB TOTAL RELAIS 45.20 EUR TTC (carburant kangoo) -- 2025-02-03 VIR URSSAF 1420.00 EUR COTISATIONS T4 -- 04/02/25 PREL ORANGE SA FACT 89.90 EUR TTC INTERNET ATELIER -- 2025-02-06 CHQ 44921 POINT P 890.50 EUR ACHAT CIMENT -- 08/02 CB LEROY MERLIN QUINCAILLERIE 112.40 EUR",
+        solutionPrompt: "Rôle : Tu es Comptable Général d'entreprise.\nTâche : Transforme ce flux bancaire brut en un tableau Markdown exploitable sous Excel.\nContexte : Clôture mensuelle des notes et factures.\nFormat : Tableau à 5 colonnes strictes : Date (JJ/MM/AAAA) | Tiers / Fournisseur | Catégorie de charge | Montant TTC (€) | Taux TVA estimé (20% ou exonéré). Pas de texte introductif.",
+        quiz: {
+          question: "Quel format est le plus efficace pour copier-coller le résultat directement dans Excel ?",
+          options: [
+            "Un paragraphe rédigé avec des virgules",
+            "Un tableau Markdown standard avec barres verticales |",
+            "Une liste à puces numérotée"
+          ],
+          correct: 1
+        },
+        screenHTML: `
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6 my-auto">
+            <div class="keria-card p-7 rounded-3xl">
+              <span class="text-[10px] font-bold uppercase tracking-wider text-rose-600 block mb-2">Matière Hétérogène</span>
+              <h4 class="text-sm font-bold text-keria-navy mb-3">Relevé Brut Inexploitable</h4>
+              <div class="p-3.5 bg-slate-50 rounded-xl font-mono text-[11px] text-slate-600 space-y-1.5 border border-slate-200">
+                <div>01/02 CB TOTAL 45.20 EUR TTC (carburant)</div>
+                <div>03/02 VIR URSSAF 1420.00 COTIS T4</div>
+                <div>04/02/25 PREL ORANGE 89.90 TTC TEL</div>
+              </div>
+            </div>
+
+            <div class="keria-card p-7 rounded-3xl border-keria-blueBorder">
+              <span class="text-[10px] font-bold uppercase tracking-wider text-keria-blue block mb-2">Extraction Structurée</span>
+              <h4 class="text-sm font-bold text-keria-navy mb-3">Tableau Directement Compatible</h4>
+              <div class="p-3.5 bg-keria-blueSoft/30 rounded-xl font-mono text-[11px] text-keria-navy border border-keria-blueBorder space-y-1.5">
+                <div class="font-bold text-keria-blue">| Date | Tiers | Catégorie | Montant |</div>
+                <div>| 01/02/25 | Total | Carburant | 45.20 € |</div>
+                <div>| 03/02/25 | URSSAF | Social | 1420.00 € |</div>
+              </div>
+            </div>
+          </div>
+        `
+      },
+      {
+        id: 7,
+        moduleCode: "M3",
+        badge: "02:35 - 03:00 | Module 3",
+        title: "Atelier Pratique n°2 : Ventilation Analytique",
+        subtitle: "Autonomie complète : conversion d'un lot de factures en matrice de gestion",
+        timeSlot: "02:35 - 03:00",
+        notes: "COACHING EN SALLE :\n- Demander à chacun d'extraire la matière brute n°2 dans l'espace stagiaire.\n- Objectif : Obtenir un tableau propre avec code comptable suggéré.\n- Vérifier que personne ne recopie les montants à la main.",
+        demoPrompt: "Classe ces dépenses brutes en 3 catégories : Frais généraux, Véhicules, Matières premières.",
+        rawMaterial: "EXTRAIT DE FACTURES EN VRAC :\nFacture F2025-101 (Fournisseur : Würth France) : 340 € vis inox, 120 € forets béton.\nFacture F2025-102 (TotalEnergies Fleet) : Péage A10 42.50 €, Gazole Master 95.00 €.\nFacture F2025-103 (Cabinet Comptable Associés) : Acompte révision bilan 850.00 € HT.\nFacture F2025-104 (LocaNacelle 93) : Location nacelle 18m pour chantier mairie 650.00 € HT.",
+        solutionPrompt: "Rôle : Tu es Contrôleur de Gestion PME.\nTâche : Analyse et ventile ces factures brutes dans une matrice de suivi analytique.\nContexte : Préparation du tableau de bord de gestion mensuel.\nFormat : Tableau 4 colonnes : N° Facture | Tiers | Pôle Analytique (Chantier / Support / Véhicules) | Total HT (€). Ajoute une ligne de totalisation globale à la fin.",
+        quiz: {
+          question: "Dans l'exercice de ventilation, où imputer la facture LocaNacelle (location de nacelle 18m) ?",
+          options: [
+            "Pôle Support / Frais de siège",
+            "Pôle Véhicules de direction",
+            "Pôle Chantier opérationnel"
+          ],
+          correct: 2
+        },
+        screenHTML: `
+          <div class="max-w-2xl mx-auto w-full my-auto text-center space-y-6">
+            <span class="text-xs font-bold uppercase tracking-wider text-keria-blue bg-keria-blueSoft px-3 py-1 rounded-full border border-keria-blueBorder font-mono">Atelier Données</span>
+            <h3 class="text-3xl font-black text-keria-navy">Extraction & Ventilation de Dépenses</h3>
+            <p class="text-xs sm:text-sm text-slate-600 leading-relaxed">
+              Passez sur votre application mobile ou portable stagiaire pour transformer le lot de factures en tableau analytique prêt pour votre tableur.
+            </p>
+          </div>
+        `
+      },
+      {
+        id: 8,
+        moduleCode: "M4",
+        badge: "03:00 - 03:45 | Module 4",
+        title: "Personnaliser son Assistant Métier",
+        subtitle: "Configurer les Custom Instructions selon son poste réel",
+        timeSlot: "03:00 - 03:45",
+        notes: "MÉTHODOLOGIE DES CUSTOM INSTRUCTIONS :\n- Ne plus répéter son contexte à chaque échange.\n- Configurer les deux fenêtres maîtresses : 'Qui suis-je ?' et 'Comment dois-tu me répondre ?'.\n- Chaque stagiaire doit repartir avec son bloc de configuration copié dans son outil de travail.",
+        demoPrompt: "Configure le profil d'instructions personnalisées pour un Dirigeant de TPE de 15 salariés.",
+        rawMaterial: "PROFIL TYPE ASSISTANT ADV PME :\n- Entreprise : Négoce de bois et découpe sur-mesure.\n- Clients : 70% artisans fidèles, 30% particuliers bricoleurs.\n- Ton : Direct, chaleureux, orienté solution immédiate, zéro blabla pompeux.\n- Règle d'or : Toujours proposer une alternative de stock si une référence est en rupture.",
+        solutionPrompt: "BLOC D'INSTRUCTIONS PERSONNALISÉES (À coller dans ChatGPT / Copilot) :\n\n[QUI JE SUIS] :\nJe suis Assistante ADV dans une PME française de négoce de matériaux (18 salariés). Mes clients sont des artisans du bâtiment pressés et exigeants.\n\n[COMMENT TU DOIS ME RÉPONDRE] :\n1. Adopte un ton direct, pro, efficace et empathique.\n2. Pas de formules d'introduction inutiles ('Certainement !', 'En tant qu'IA...'). Entre directement dans le vif du sujet.\n3. Formate toujours les données chiffrées en tableaux.\n4. Si une info manque pour trancher, pose-moi 2 questions précises maximum.",
+        quiz: {
+          question: "Quel est le bénéfice majeur des 'Custom Instructions' (Instructions personnalisées) ?",
+          options: [
+            "Empêcher l'IA de consommer de la batterie",
+            "Ne plus avoir à réexpliquer son métier et ses contraintes à chaque nouveau message",
+            "Remplacer complètement le logiciel comptable de l'entreprise"
+          ],
+          correct: 1
+        },
+        screenHTML: `
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6 my-auto">
+            <div class="keria-card p-7 rounded-3xl">
+              <span class="text-[10px] font-bold uppercase tracking-wider text-keria-muted block mb-2">Volet 1</span>
+              <h4 class="text-sm font-bold text-keria-navy mb-2">Votre Contexte Fixe</h4>
+              <p class="text-xs text-slate-600 leading-relaxed mb-4">Votre secteur d'activité, vos clients cibles et votre terminologie d'entreprise.</p>
+              <div class="bg-slate-50 p-3.5 rounded-xl border border-slate-200 text-xs font-mono text-slate-700">
+                "Je suis Directeur Général d'une PME de 15 collaborateurs..."
+              </div>
+            </div>
+
+            <div class="keria-card p-7 rounded-3xl border-keria-blueBorder">
+              <span class="text-[10px] font-bold uppercase tracking-wider text-keria-blue block mb-2">Volet 2</span>
+              <h4 class="text-sm font-bold text-keria-navy mb-2">Règles de Forme</h4>
+              <p class="text-xs text-slate-600 leading-relaxed mb-4">Interdiction du bavardage, réponses synthétiques et structurées.</p>
+              <div class="bg-keria-blueSoft/40 p-3.5 rounded-xl border border-keria-blueBorder text-xs font-mono text-keria-navy font-bold">
+                "Bannis les phrases de remplissage. Va à l'essentiel."
+              </div>
+            </div>
+          </div>
+        `
+      },
+      {
+        id: 9,
+        moduleCode: "M5",
+        badge: "03:45 - 04:00 | Module 5",
+        title: "Plan d'Action Individuel & Clôture",
+        subtitle: "Votre engagement pour demain 09h00 : 1 corvée récurrente transformée",
+        timeSlot: "03:45 - 04:00",
+        notes: "CLÔTURE & ENGAGEMENT :\n- Tour de table express (30 secondes par participant).\n- Chacun annonce : 'Quelle tâche répétitive vais-je traiter avec ma consigne RTCF dès demain ?'\n- Rappeler de télécharger la fiche mémo des 10 prompts indispensables.",
+        demoPrompt: "Génère mon plan d'action d'intégration de l'IA sur les 14 prochains jours pour mon poste.",
+        rawMaterial: "GUIDE MÉMO DE FIN DE FORMATION (Règles d'or KeriA) :\n1. Jamais de données personnelles nominatives (RGPD).\n2. La structure RTCF systématique pour tout travail sérieux.\n3. L'IA rédige le premier jet, l'expert humain valide et assume.\n4. Configurer ses Custom Instructions pour économiser 5 min par requête.",
+        solutionPrompt: "FICHE RÉCAPITULATIVE DES 10 PROMPTS INDISPENSABLES PME :\n1. Réponse litige client apaisée\n2. Extraction de facture vers tableau\n3. Synthèse de devis de sous-traitant\n4. Reformulation de note de service interne\n5. Grille d'évaluation d'entretien d'embauche\n6. Relance d'impayé graduée (R1, R2, R3)\n7. Rédaction de fiche de poste claire\n8. Compte-rendu de réunion de chantier\n9. FAQ commerciale pour site internet\n10. Modèle d'email d'accueil nouveau collaborateur",
+        quiz: {
+          question: "Quel engagement concret garantit un retour sur investissement immédiat dès demain ?",
+          options: [
+            "Lire un manuel technique de 300 pages sur les réseaux de neurones",
+            "Déléguer le 1er jet d'une tâche récurrente avec un prompt RTCF structuré",
+            "Interdire complètement l'utilisation de l'IA dans tous les services"
+          ],
+          correct: 1
+        },
+        screenHTML: `
+          <div class="max-w-3xl mx-auto w-full my-auto text-center space-y-6">
+            <span class="text-xs font-bold uppercase tracking-wider text-keria-blue bg-keria-blueSoft px-3 py-1 rounded-full border border-keria-blueBorder font-mono">Passage à l'Action</span>
+            <h2 class="text-3xl sm:text-4xl font-black text-keria-navy">Votre Défi dès Demain Matin</h2>
+            <p class="text-xs sm:text-sm text-slate-600 leading-relaxed max-w-xl mx-auto">
+              Choisissez <strong>une seule corvée hebdomadaire</strong> et déléguez son premier jet avec une consigne RTCF.
+            </p>
+            <div class="grid grid-cols-3 gap-3 pt-4 text-left">
+              <div class="p-5 rounded-3xl keria-card border-t-4 border-t-keria-navy">
+                <span class="text-[10px] text-keria-muted font-bold block mb-1">09h00 Demain</span>
+                <span class="text-xs font-bold text-keria-navy block mb-1">1er Test RTCF</span>
+                <span class="text-[11px] text-slate-600 leading-tight block">Sur un cas réel sans données sensibles.</span>
+              </div>
+              <div class="p-5 rounded-3xl keria-card border-t-4 border-t-keria-blue">
+                <span class="text-[10px] text-keria-muted font-bold block mb-1">Semaine 1</span>
+                <span class="text-xs font-bold text-keria-navy block mb-1">Bibliothèque</span>
+                <span class="text-[11px] text-slate-600 leading-tight block">Enregistrer ses consignes efficaces.</span>
+              </div>
+              <div class="p-5 rounded-3xl keria-card border-t-4 border-t-emerald-500">
+                <span class="text-[10px] text-keria-muted font-bold block mb-1">Chaque jour</span>
+                <span class="text-xs font-bold text-keria-navy block mb-1">45 min libérées</span>
+                <span class="text-[11px] text-slate-600 leading-tight block">Temps réinvesti sur la valeur client.</span>
+              </div>
+            </div>
+          </div>
+        `
       }
     ];
 
-    // 2. ÉTAT GLOBAL ET CANAL TEMPS RÉEL (BroadcastChannel pour le direct multi-écrans)
-    let currentSlide = 0;
-    let timerSeconds = 600;
+    /**
+     * GESTION DE L'ÉTAT GLOBAL DE SESSION
+     */
+    const sessionState = {
+      currentSlideIndex: 0,
+      activeView: 'presentation',
+      timerDurationSec: 600,
+      timerRemainingSec: 600,
+      timerRunning: false,
+      timerLabel: "Atelier 10 min",
+      branchLevel: 'rtcf',
+      branchEcosystem: 'm365',
+      quizVotes: {},
+      studentVotes: {},
+      isDedicatedProjector: false
+    };
+
     let timerInterval = null;
-    let branches = { level: 'beginner', ecosystem: 'google' };
 
-    // Ce canal permet à l'onglet formateur de piloter l'onglet vidéoprojecteur instantanément
-    const channel = new BroadcastChannel('keria_session_channel');
+    /**
+     * SYNCHRONISATION MULTI-ÉCRANS SANS SERVEUR (BroadcastChannel)
+     */
+    const syncChannel = new BroadcastChannel('keria_formation_channel');
 
-    channel.onmessage = (event) => {
-      const data = event.data;
-      if (data.type === 'CHANGE_SLIDE') {
-        currentSlide = data.slide;
-        renderSlide();
-      } else if (data.type === 'TIMER_UPDATE') {
-        updateTimerDisplay(data.seconds);
-      } else if (data.type === 'BRANCH_UPDATE') {
-        branches = data.branches;
+    syncChannel.onmessage = (event) => {
+      const { type, payload } = event.data;
+      if (type === 'SYNC_STATE') {
+        sessionState.currentSlideIndex = payload.currentSlideIndex;
+        sessionState.timerRemainingSec = payload.timerRemainingSec;
+        sessionState.timerRunning = payload.timerRunning;
+        sessionState.timerLabel = payload.timerLabel;
+        sessionState.branchLevel = payload.branchLevel;
+        sessionState.branchEcosystem = payload.branchEcosystem;
+        if (payload.quizVotes) sessionState.quizVotes = payload.quizVotes;
+        renderAll();
+        logEvent(`Slide synchronisée : #${payload.currentSlideIndex + 1}`);
+      } else if (type === 'SUBMIT_VOTE') {
+        recordQuizVote(payload.slideId, payload.optionIndex, false);
+      } else if (type === 'RESET_VOTES') {
+        sessionState.quizVotes[sessionState.currentSlideIndex] = {};
+        renderQuizViews();
+        logEvent(`Votes réinitialisés`);
+      } else if (type === 'TOGGLE_QR') {
+        toggleQrModal(payload.open, false);
+      } else if (type === 'PING') {
+        broadcastState();
       }
     };
 
-    // 3. GESTION DU CHANGEMENT DE VUE
-    function switchView(viewId) {
-      document.getElementById('view-screen').classList.add('hidden');
-      document.getElementById('view-trainer').classList.add('hidden');
-      document.getElementById('view-student').classList.add('hidden');
-      document.getElementById('view-' + viewId).classList.remove('hidden');
-
-      ['screen', 'trainer', 'student'].forEach(id => {
-        const btn = document.getElementById('btn-view-' + id);
-        if (id === viewId) {
-          btn.className = "px-3 py-1 rounded-md font-bold bg-indigo-600 text-white shadow";
-        } else {
-          btn.className = "px-3 py-1 rounded-md font-medium text-slate-400 hover:text-white";
+    function broadcastState() {
+      syncChannel.postMessage({
+        type: 'SYNC_STATE',
+        payload: {
+          currentSlideIndex: sessionState.currentSlideIndex,
+          timerRemainingSec: sessionState.timerRemainingSec,
+          timerRunning: sessionState.timerRunning,
+          timerLabel: sessionState.timerLabel,
+          branchLevel: sessionState.branchLevel,
+          branchEcosystem: sessionState.branchEcosystem,
+          quizVotes: sessionState.quizVotes
         }
       });
     }
 
-    // 4. RENDU DE LA SLIDE COURANTE
-    function renderSlide() {
-      const slide = slidesData[currentSlide];
-
-      // Vue Vidéoprojecteur
-      document.getElementById('screen-badge').innerText = slide.badge;
-      document.getElementById('screen-title').innerText = slide.title;
-      document.getElementById('screen-subtitle').innerText = slide.subtitle;
-      document.getElementById('screen-content').innerHTML = slide.screenHTML;
-
-      // Vue Formateur
-      document.getElementById('trainer-notes').innerHTML = `<p>${slide.notes}</p>`;
-      document.getElementById('trainer-timing-pill').innerText = slide.badge.split('|')[0].trim();
-      document.getElementById('demo-prompt-input').value = slide.demoPrompt;
-
-      // Vue Participant
-      document.getElementById('student-module-pill').innerText = slide.badge.split('|')[1]?.trim() || "Module";
-      document.getElementById('student-slide-title').innerText = slide.title;
-      document.getElementById('student-raw-content').innerText = slide.rawMaterial;
-
-      renderTrainerSlideList();
+    function currentSlide() {
+      return slidesData[sessionState.currentSlideIndex];
     }
 
-    function renderTrainerSlideList() {
-      const container = document.getElementById('trainer-slide-list');
-      container.innerHTML = '';
-      slidesData.forEach((s, idx) => {
-        const btn = document.createElement('button');
-        btn.onclick = () => goToSlide(idx);
-        btn.className = `p-2 rounded-lg text-left text-xs transition ${
-          idx === currentSlide
-            ? 'bg-indigo-600/20 border border-indigo-500 text-indigo-300 font-bold'
-            : 'bg-slate-950 border border-slate-800 text-slate-400 hover:bg-slate-800 hover:text-slate-200'
-        }`;
-        btn.innerText = `${s.id}. ${s.title}`;
-        container.appendChild(btn);
+    function getStudentUrl() {
+      const url = new URL(window.location.href);
+      url.searchParams.set('view', 'student');
+      url.searchParams.delete('screen');
+      return url.toString();
+    }
+
+    function launchProjectorWindow() {
+      const url = new URL(window.location.href);
+      url.searchParams.set('view', 'presentation');
+      url.searchParams.set('screen', 'projector');
+      window.open(url.toString(), 'keria_projection_window', 'width=1280,height=720,menubar=no,toolbar=no,status=no');
+      showToast("Fenêtre de projection ouverte");
+      logEvent("Écran 1 (Projection) détaché");
+    }
+
+    function launchCockpitWindow() {
+      const url = new URL(window.location.href);
+      url.searchParams.set('view', 'cockpit');
+      url.searchParams.delete('screen');
+      window.open(url.toString(), 'keria_cockpit_window', 'width=1280,height=800,menubar=no,toolbar=no');
+      showToast("Régie formateur ouverte");
+      logEvent("Écran 2 (Régie) détaché");
+    }
+
+    function launchStudentWindow() {
+      window.open(getStudentUrl(), '_blank');
+      showToast("App stagiaire ouverte");
+    }
+
+    function toggleQrModal(open, broadcast = true) {
+      const modal = document.getElementById('qr-modal');
+      if (open) {
+        modal.classList.remove('hidden');
+        renderQrCodes();
+      } else {
+        modal.classList.add('hidden');
+      }
+      if (broadcast) {
+        syncChannel.postMessage({ type: 'TOGGLE_QR', payload: { open } });
+      }
+    }
+
+    function openMultiScreenModal(open = true) {
+      const modal = document.getElementById('multiscreen-modal');
+      if (open) modal.classList.remove('hidden');
+      else modal.classList.add('hidden');
+    }
+
+    function renderQrCodes() {
+      const studentUrl = getStudentUrl();
+      const urlDisplay = document.getElementById('modal-qr-url');
+      if (urlDisplay) urlDisplay.innerText = studentUrl;
+
+      const modalContainer = document.getElementById('modal-qr-container');
+      if (modalContainer && typeof QRCode !== 'undefined') {
+        modalContainer.innerHTML = "";
+        try {
+          new QRCode(modalContainer, {
+            text: studentUrl,
+            width: 200,
+            height: 200,
+            colorDark: "#15244C",
+            colorLight: "#ffffff",
+            correctLevel: QRCode.CorrectLevel.M
+          });
+        } catch (e) {
+          console.warn("QRCode modal rendering skipped", e);
+        }
+      }
+    }
+
+    function recordQuizVote(slideId, optionIndex, broadcast = true) {
+      if (!sessionState.quizVotes[slideId]) {
+        sessionState.quizVotes[slideId] = {};
+      }
+      sessionState.quizVotes[slideId][optionIndex] = (sessionState.quizVotes[slideId][optionIndex] || 0) + 1;
+      
+      renderQuizViews();
+
+      if (broadcast) {
+        syncChannel.postMessage({
+          type: 'SUBMIT_VOTE',
+          payload: { slideId, optionIndex }
+        });
+        broadcastState();
+      }
+    }
+
+    function studentVote(optionIndex) {
+      const slide = currentSlide();
+      sessionState.studentVotes[slide.id] = optionIndex;
+      recordQuizVote(slide.id, optionIndex, true);
+      showToast("Vote envoyé en direct");
+      renderQuizViews();
+    }
+
+    function resetCurrentQuizVotes() {
+      sessionState.quizVotes[sessionState.currentSlideIndex] = {};
+      syncChannel.postMessage({ type: 'RESET_VOTES' });
+      broadcastState();
+      renderQuizViews();
+      showToast("Votes réinitialisés");
+    }
+
+    function renderQuizViews() {
+      const slide = currentSlide();
+      const quiz = slide.quiz;
+      if (!quiz) return;
+
+      const votesMap = sessionState.quizVotes[slide.id] || {};
+      const totalVotes = Object.values(votesMap).reduce((acc, curr) => acc + curr, 0);
+
+      const presQuestion = document.getElementById('pres-quiz-question');
+      const presTotal = document.getElementById('pres-quiz-total-votes');
+      const presBars = document.getElementById('pres-quiz-bars');
+
+      if (presQuestion) presQuestion.innerText = quiz.question;
+      if (presTotal) presTotal.innerText = `${totalVotes} vote${totalVotes > 1 ? 's' : ''}`;
+
+      if (presBars) {
+        presBars.innerHTML = quiz.options.map((opt, idx) => {
+          const count = votesMap[idx] || 0;
+          const pct = totalVotes > 0 ? Math.round((count / totalVotes) * 100) : 0;
+
+          return `
+            <div>
+              <div class="flex justify-between text-xs mb-1 font-medium">
+                <span class="text-keria-navy font-semibold">${opt}</span>
+                <span class="font-mono text-keria-blue font-bold">${pct}% (${count})</span>
+              </div>
+              <div class="w-full bg-slate-100 h-2 rounded-full overflow-hidden border border-slate-200">
+                <div class="h-full bg-gradient-to-r from-keria-navy to-keria-blue rounded-full transition-all duration-300" style="width: ${pct}%"></div>
+              </div>
+            </div>
+          `;
+        }).join('');
+      }
+
+      const studentQuestion = document.getElementById('student-quiz-question');
+      const studentOptions = document.getElementById('student-quiz-options');
+      const studentStatus = document.getElementById('student-quiz-status');
+      const hasVoted = sessionState.studentVotes[slide.id] !== undefined;
+
+      if (studentQuestion) studentQuestion.innerText = quiz.question;
+      if (studentStatus) {
+        studentStatus.innerText = hasVoted ? "Voté ✓" : "Touchez pour voter";
+        studentStatus.className = hasVoted 
+          ? "text-[10px] font-mono px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 font-bold border border-emerald-200"
+          : "text-[10px] font-mono px-2.5 py-0.5 rounded-full bg-slate-100 text-keria-muted font-bold";
+      }
+
+      if (studentOptions) {
+        studentOptions.innerHTML = quiz.options.map((opt, idx) => {
+          const isSelected = sessionState.studentVotes[slide.id] === idx;
+          return `
+            <button onclick="studentVote(${idx})" ${hasVoted ? 'disabled' : ''} class="w-full text-left p-3.5 rounded-xl text-xs font-bold flex items-center justify-between transition-all ${
+              isSelected 
+                ? 'bg-keria-blue text-white shadow-xs' 
+                : hasVoted 
+                  ? 'bg-slate-50 text-slate-400 opacity-50 cursor-not-allowed border border-slate-200' 
+                  : 'bg-slate-50 hover:bg-keria-blueSoft text-keria-navy border border-slate-200 active:scale-[0.99]'
+            }">
+              <span class="flex-1">${opt}</span>
+              ${isSelected ? '<span class="text-xs font-bold text-white ml-2">✓</span>' : ''}
+            </button>
+          `;
+        }).join('');
+      }
+    }
+
+    function setView(viewName) {
+      sessionState.activeView = viewName;
+      ['presentation', 'cockpit', 'student'].forEach(v => {
+        const el = document.getElementById(`view-${v}`);
+        const tab = document.getElementById(`tab-${v}`);
+        if (v === viewName) {
+          el.classList.remove('hidden');
+          if (tab) {
+            tab.className = "tab-btn px-4 py-1.5 rounded-full font-bold transition-all text-keria-navy bg-white shadow-xs flex items-center gap-1.5";
+          }
+        } else {
+          el.classList.add('hidden');
+          if (tab) {
+            tab.className = "tab-btn px-4 py-1.5 rounded-full font-semibold transition-all text-keria-muted hover:text-keria-navy flex items-center gap-1.5";
+          }
+        }
       });
+
+      if (sessionState.isDedicatedProjector && viewName === 'presentation') {
+        const header = document.getElementById('main-header');
+        if (header) header.classList.add('hidden');
+      }
+
+      renderAll();
     }
 
-    // 5. NAVIGATION SYNCHRONISÉE
+    function goToSlide(index) {
+      if (index >= 0 && index < slidesData.length) {
+        sessionState.currentSlideIndex = index;
+        broadcastState();
+        renderAll();
+        logEvent(`Slide : ${slidesData[index].moduleCode} - ${slidesData[index].title.substring(0, 20)}...`);
+      }
+    }
+
     function nextSlide() {
-      if (currentSlide < slidesData.length - 1) {
-        currentSlide++;
-        renderSlide();
-        channel.postMessage({ type: 'CHANGE_SLIDE', slide: currentSlide });
+      if (sessionState.currentSlideIndex < slidesData.length - 1) {
+        goToSlide(sessionState.currentSlideIndex + 1);
       }
     }
 
     function prevSlide() {
-      if (currentSlide > 0) {
-        currentSlide--;
-        renderSlide();
-        channel.postMessage({ type: 'CHANGE_SLIDE', slide: currentSlide });
+      if (sessionState.currentSlideIndex > 0) {
+        goToSlide(sessionState.currentSlideIndex - 1);
       }
     }
 
-    function goToSlide(index) {
-      currentSlide = index;
-      renderSlide();
-      channel.postMessage({ type: 'CHANGE_SLIDE', slide: currentSlide });
-    }
-
     function setBranch(category, value) {
-      branches[category] = value;
-      channel.postMessage({ type: 'BRANCH_UPDATE', branches });
-      alert(`Bifurcation activée : ${category} -> ${value}`);
+      if (category === 'level') sessionState.branchLevel = value;
+      else if (category === 'ecosystem') sessionState.branchEcosystem = value;
+      broadcastState();
+      renderAll();
+      logEvent(`Bifurcation : ${category} -> ${value}`);
     }
 
-    // 6. GESTION DU CHRONOMÈTRE
-    function formatTime(sec) {
-      const m = Math.floor(sec / 60).toString().padStart(2, '0');
-      const s = (sec % 60).toString().padStart(2, '0');
+    function formatTime(seconds) {
+      const m = Math.floor(seconds / 60).toString().padStart(2, '0');
+      const s = (seconds % 60).toString().padStart(2, '0');
       return `${m}:${s}`;
     }
 
-    function updateTimerDisplay(sec) {
-      const formatted = formatTime(sec);
-      document.getElementById('global-timer-display').innerText = formatted;
-      const trainerTimer = document.getElementById('trainer-timer-display');
-      if (trainerTimer) trainerTimer.innerText = formatted;
+    function setTimerDuration(minutes, label) {
+      pauseTimer();
+      sessionState.timerDurationSec = minutes * 60;
+      sessionState.timerRemainingSec = minutes * 60;
+      sessionState.timerLabel = label;
+      broadcastState();
+      updateTimerDisplays();
+      logEvent(`Chrono : ${label}`);
     }
 
     function startTimer() {
+      if (sessionState.timerRunning) return;
+      sessionState.timerRunning = true;
+      document.getElementById('cockpit-timer-state').innerText = "En cours";
+      document.getElementById('cockpit-timer-state').className = "text-[10px] font-bold text-white bg-keria-blue px-2.5 py-0.5 rounded-full shadow-2xs";
+      
+      broadcastState();
+
       if (timerInterval) clearInterval(timerInterval);
       timerInterval = setInterval(() => {
-        if (timerSeconds > 0) {
-          timerSeconds--;
-          updateTimerDisplay(timerSeconds);
-          channel.postMessage({ type: 'TIMER_UPDATE', seconds: timerSeconds });
+        if (sessionState.timerRemainingSec > 0) {
+          sessionState.timerRemainingSec--;
+          updateTimerDisplays();
+          if (sessionState.timerRemainingSec % 5 === 0) broadcastState();
         } else {
-          clearInterval(timerInterval);
+          pauseTimer();
+          logEvent("Fin du chrono");
         }
       }, 1000);
     }
 
     function pauseTimer() {
-      if (timerInterval) clearInterval(timerInterval);
+      sessionState.timerRunning = false;
+      clearInterval(timerInterval);
+      document.getElementById('cockpit-timer-state').innerText = "En pause";
+      document.getElementById('cockpit-timer-state').className = "text-[10px] font-bold text-keria-muted bg-slate-200 px-2.5 py-0.5 rounded-full";
+      broadcastState();
+      updateTimerDisplays();
     }
 
     function resetTimer() {
       pauseTimer();
-      timerSeconds = 600;
-      updateTimerDisplay(timerSeconds);
-      channel.postMessage({ type: 'TIMER_UPDATE', seconds: timerSeconds });
+      sessionState.timerRemainingSec = sessionState.timerDurationSec;
+      document.getElementById('cockpit-timer-state').innerText = "Prêt";
+      document.getElementById('cockpit-timer-state').className = "text-[10px] font-bold text-keria-blue bg-keria-blueSoft px-2.5 py-0.5 rounded-full border border-keria-blueBorder";
+      broadcastState();
+      updateTimerDisplays();
     }
 
-    // 7. FONCTIONNALITÉS ÉLÈVES (COPIE & CONSTRUCTEUR RTCF)
-    function copyRawMaterial() {
-      const text = document.getElementById('student-raw-content').innerText;
-      navigator.clipboard.writeText(text);
-      const btn = document.getElementById('btn-copy-raw');
-      btn.innerText = "Copié !";
-      setTimeout(() => btn.innerText = "Copier le texte brut", 2000);
+    function updateTimerDisplays() {
+      const formatted = formatTime(sessionState.timerRemainingSec);
+      
+      const cockpitDisp = document.getElementById('cockpit-timer-display');
+      if (cockpitDisp) cockpitDisp.innerText = formatted;
+
+      const presBox = document.getElementById('pres-timer-box');
+      const presDisp = document.getElementById('pres-timer-val');
+      const presLabel = document.getElementById('pres-timer-label');
+      if (presDisp) presDisp.innerText = formatted;
+      if (presLabel) presLabel.innerText = sessionState.timerLabel;
+      if (presBox) {
+        if (sessionState.timerRunning || sessionState.timerRemainingSec < sessionState.timerDurationSec) {
+          presBox.classList.remove('hidden');
+        } else {
+          presBox.classList.add('hidden');
+        }
+      }
+
+      const studentDisp = document.getElementById('student-timer-display');
+      if (studentDisp) studentDisp.innerText = formatted;
     }
 
-    function copyDemoPrompt() {
-      const text = document.getElementById('demo-prompt-input').value;
-      navigator.clipboard.writeText(text);
-      alert("Prompt copié dans le presse-papier !");
+    function updateRtcfAssembly() {
+      const role = document.getElementById('rtcf-role').value.trim() || "[Votre Rôle]";
+      const task = document.getElementById('rtcf-task').value.trim() || "[Votre Tâche]";
+      const context = document.getElementById('rtcf-context').value.trim() || "[Votre Contexte]";
+      const format = document.getElementById('rtcf-format').value.trim() || "[Votre Format]";
+
+      const assembled = `Rôle : ${role}\nTâche : ${task}\nContexte : ${context}\nFormat & Contraintes : ${format}`;
+      document.getElementById('rtcf-assembly').innerText = assembled;
     }
 
-    function updateRTCFOutput() {
-      const r = document.getElementById('rtcf-role').value.trim();
-      const t = document.getElementById('rtcf-task').value.trim();
-      const c = document.getElementById('rtcf-context').value.trim();
-      const f = document.getElementById('rtcf-format').value.trim();
-
-      let parts = [];
-      if (r) parts.push(`RÔLE : ${r}`);
-      if (t) parts.push(`TÂCHE : ${t}`);
-      if (c) parts.push(`CONTEXTE : ${c}`);
-      if (f) parts.push(`FORMAT & CONTRAINTES : ${f}`);
-
-      const resultBox = document.getElementById('rtcf-result');
-      resultBox.innerText = parts.length > 0 
-        ? parts.join('\n\n') 
-        : "Remplis les champs ci-dessus pour générer ton prompt automatiquement.";
+    function resetRtcfFields() {
+      document.getElementById('rtcf-role').value = '';
+      document.getElementById('rtcf-task').value = '';
+      document.getElementById('rtcf-context').value = '';
+      document.getElementById('rtcf-format').value = '';
+      updateRtcfAssembly();
     }
 
-    function copyGeneratedRTCF() {
-      const text = document.getElementById('rtcf-result').innerText;
-      navigator.clipboard.writeText(text);
-      alert("Prompt RTCF copié !");
-    }
+    function toggleAccordion(id, btn) {
+      const body = document.getElementById(id);
+      const label = btn.querySelector('.toggle-label');
+      const arrow = btn.querySelector('.toggle-arrow');
+      const isHidden = body.classList.contains('hidden');
 
-    function toggleSolution() {
-      const box = document.getElementById('solution-box');
-      const chevron = document.getElementById('solution-chevron');
-      if (box.classList.contains('hidden')) {
-        box.classList.remove('hidden');
-        chevron.innerText = "Masquer ▲";
+      if (isHidden) {
+        body.classList.remove('hidden');
+        if (label) label.innerText = "Masquer";
+        if (arrow) arrow.classList.add('rotate-180');
       } else {
-        box.classList.add('hidden');
-        chevron.innerText = "Afficher ▼";
+        body.classList.add('hidden');
+        if (label) label.innerText = "Afficher";
+        if (arrow) arrow.classList.remove('rotate-180');
       }
     }
 
-    // DÉMARRAGE INITIAL SUR LA VUE VIDÉOPROJECTEUR
-    switchView('screen');
-    renderSlide();
+    function copyToClipboard(text, triggerBtn) {
+      if (!text) return;
+      const textarea = document.createElement('textarea');
+      textarea.value = text;
+      textarea.style.position = 'fixed';
+      textarea.style.opacity = '0';
+      document.body.appendChild(textarea);
+      textarea.select();
+      
+      try {
+        document.execCommand('copy');
+        showToast("Copié dans le presse-papier");
+        if (triggerBtn) {
+          const originalText = triggerBtn.innerText;
+          triggerBtn.innerText = "✓";
+          setTimeout(() => { triggerBtn.innerText = originalText; }, 1500);
+        }
+      } catch (err) {
+        console.error(err);
+      } finally {
+        document.body.removeChild(textarea);
+      }
+    }
+
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      const toastMsg = document.getElementById('toast-message');
+      toastMsg.innerText = msg;
+      toast.classList.remove('translate-y-16', 'opacity-0');
+      setTimeout(() => {
+        toast.classList.add('translate-y-16', 'opacity-0');
+      }, 2000);
+    }
+
+    function logEvent(msg) {
+      const log = document.getElementById('cockpit-event-log');
+      if (!log) return;
+      const time = new Date().toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
+      const entry = document.createElement('div');
+      entry.innerHTML = `<span class="text-keria-dim">[${time}]</span> ${msg}`;
+      log.prepend(entry);
+    }
+
+    function renderAll() {
+      const slide = currentSlide();
+
+      // Vue Présentation
+      document.getElementById('pres-badge').innerText = slide.badge;
+      document.getElementById('pres-slide-num').innerText = `${sessionState.currentSlideIndex + 1} / ${slidesData.length}`;
+      document.getElementById('pres-title').innerText = slide.title;
+      document.getElementById('pres-subtitle').innerText = slide.subtitle;
+      document.getElementById('pres-content').innerHTML = slide.screenHTML;
+
+      // Vue Cockpit
+      document.getElementById('cockpit-module-tag').innerText = slide.moduleCode;
+      document.getElementById('cockpit-title').innerText = slide.title;
+      document.getElementById('cockpit-time-slot').innerText = slide.timeSlot;
+      document.getElementById('cockpit-notes').innerText = slide.notes;
+      document.getElementById('cockpit-demo-prompt').innerText = slide.demoPrompt;
+      document.getElementById('cockpit-progress-badge').innerText = `${sessionState.currentSlideIndex + 1} / ${slidesData.length}`;
+
+      const slideList = document.getElementById('cockpit-slide-list');
+      slideList.innerHTML = slidesData.map((s, idx) => {
+        const isActive = idx === sessionState.currentSlideIndex;
+        return `
+          <button onclick="goToSlide(${idx})" class="w-full text-left p-2.5 rounded-xl transition flex items-center justify-between ${
+            isActive 
+              ? 'bg-keria-blueSoft text-keria-navy font-bold border border-keria-blueBorder shadow-2xs' 
+              : 'text-slate-600 hover:bg-slate-100 hover:text-keria-navy'
+          }">
+            <div class="truncate mr-2">
+              <span class="text-[10px] text-keria-blue block font-mono font-bold">${s.moduleCode}</span>
+              <span class="truncate">${s.title}</span>
+            </div>
+            ${isActive ? '<span class="w-2 h-2 rounded-full bg-keria-blue"></span>' : ''}
+          </button>
+        `;
+      }).join('');
+
+      // Boutons bifurcations
+      const btnRtcf = document.getElementById('btn-branch-rtcf');
+      const btnFewshot = document.getElementById('btn-branch-fewshot');
+      if (sessionState.branchLevel === 'rtcf') {
+        btnRtcf.className = "py-1.5 px-2 rounded-lg text-xs font-bold transition text-center bg-white text-keria-navy shadow-xs border border-slate-200";
+        btnFewshot.className = "py-1.5 px-2 rounded-lg text-xs font-medium transition text-center text-slate-500 hover:text-keria-navy";
+      } else {
+        btnFewshot.className = "py-1.5 px-2 rounded-lg text-xs font-bold transition text-center bg-white text-keria-navy shadow-xs border border-slate-200";
+        btnRtcf.className = "py-1.5 px-2 rounded-lg text-xs font-medium transition text-center text-slate-500 hover:text-keria-navy";
+      }
+
+      const ecoMap = { m365: 'btn-eco-m365', google: 'btn-eco-google', standalone: 'btn-eco-standalone' };
+      ['m365', 'google', 'standalone'].forEach(eco => {
+        const btn = document.getElementById(ecoMap[eco]);
+        if (sessionState.branchEcosystem === eco) {
+          btn.className = "py-1.5 px-1 rounded-md font-bold transition text-center bg-white text-keria-navy shadow-xs border border-slate-200 text-[11px]";
+        } else {
+          btn.className = "py-1.5 px-1 rounded-md font-medium transition text-center text-slate-500 hover:text-keria-navy text-[11px]";
+        }
+      });
+
+      // Vue Stagiaire
+      document.getElementById('student-current-slide-title').innerText = `${slide.moduleCode} — ${slide.title}`;
+      document.getElementById('student-raw-material').innerText = slide.rawMaterial;
+      document.getElementById('student-solution-content').innerText = slide.solutionPrompt;
+
+      renderQuizViews();
+      updateTimerDisplays();
+      renderQrCodes();
+    }
+
+    // Raccourcis clavier Formateur
+    window.addEventListener('keydown', (e) => {
+      if (['INPUT', 'TEXTAREA'].includes(document.activeElement.tagName)) return;
+
+      if (e.key === 'ArrowRight' || e.key === 'PageDown') {
+        e.preventDefault();
+        nextSlide();
+      } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+        e.preventDefault();
+        prevSlide();
+      } else if (e.key === ' ') {
+        e.preventDefault();
+        if (sessionState.timerRunning) pauseTimer();
+        else startTimer();
+      } else if (e.key.toLowerCase() === 'q') {
+        e.preventDefault();
+        const modal = document.getElementById('qr-modal');
+        toggleQrModal(modal.classList.contains('hidden'));
+      }
+    });
+
+    // Initialisation
+    window.addEventListener('DOMContentLoaded', () => {
+      const urlParams = new URLSearchParams(window.location.search);
+      const requestedView = urlParams.get('view');
+      const isScreenProjector = urlParams.get('screen') === 'projector';
+
+      if (isScreenProjector) sessionState.isDedicatedProjector = true;
+
+      if (requestedView && ['presentation', 'cockpit', 'student'].includes(requestedView)) {
+        setView(requestedView);
+      } else {
+        setView('presentation');
+      }
+
+      updateRtcfAssembly();
+      renderAll();
+      syncChannel.postMessage({ type: 'PING' });
+    });
   </script>
 </body>
 </html>
